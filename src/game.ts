@@ -7,21 +7,20 @@ export const MAX_NAME_LENGTH = 24;
 
 export function createSession(): Session {
   return {
-    version: 1,
+    version: 2,
     phase: 'setup',
     players: [],
     traitorCount: 1,
     completedRounds: 0,
     history: {},
-    previousTraitorIds: [],
+    previousTraitors: [],
     previousMissionId: null,
     current: null,
   };
 }
 
+/** History is keyed by this, so capitalisation and surrounding spaces don't matter. */
 export const normaliseName = (name: string) => name.trim().toLocaleLowerCase();
-
-export const activePlayers = (session: Session): Player[] => session.players.filter((p) => p.active);
 
 export type Result = { session: Session; error?: undefined } | { session?: undefined; error: string };
 
@@ -42,26 +41,41 @@ export function addPlayer(session: Session, name: string, id: string = createId(
   if (!inSetup(session)) return { error: 'Return to setup to change players.' };
   const error = checkName(session, name);
   if (error) return { error };
-  return { session: { ...session, players: [...session.players, { id, name: name.trim(), active: true }] } };
+  return { session: { ...session, players: [...session.players, { id, name: name.trim() }] } };
 }
 
+/** Renaming carries the player's Traitor history over to the new name. */
 export function renamePlayer(session: Session, id: string, name: string): Result {
   if (!inSetup(session)) return { error: 'Return to setup to change players.' };
+  const player = session.players.find((p) => p.id === id);
+  if (!player) return { error: 'Player not found.' };
   const error = checkName(session, name, id);
   if (error) return { error };
+
+  const from = normaliseName(player.name);
+  const to = normaliseName(name);
+  let { history, previousTraitors } = session;
+  if (from !== to) {
+    history = { ...history };
+    if (history[from]) history[to] = history[from];
+    else delete history[to];
+    delete history[from];
+    previousTraitors = previousTraitors.filter((n) => n !== to).map((n) => (n === from ? to : n));
+  }
   return {
-    session: { ...session, players: session.players.map((p) => (p.id === id ? { ...p, name: name.trim() } : p)) },
+    session: {
+      ...session,
+      history,
+      previousTraitors,
+      players: session.players.map((p) => (p.id === id ? { ...p, name: name.trim() } : p)),
+    },
   };
 }
 
+/** Removing a player keeps their history, so re-adding the same name picks it back up. */
 export function removePlayer(session: Session, id: string): Session {
   if (!inSetup(session)) return session;
   return { ...session, players: session.players.filter((p) => p.id !== id) };
-}
-
-export function setPlayerActive(session: Session, id: string, active: boolean): Session {
-  if (!inSetup(session)) return session;
-  return { ...session, players: session.players.map((p) => (p.id === id ? { ...p, active } : p)) };
 }
 
 export function setTraitorCount(session: Session, traitorCount: number): Session {
@@ -70,7 +84,7 @@ export function setTraitorCount(session: Session, traitorCount: number): Session
 }
 
 export function configError(session: Session): string | null {
-  return validateConfig(activePlayers(session).length, session.traitorCount);
+  return validateConfig(session.players.length, session.traitorCount);
 }
 
 /** Deals a new round (first game or next game). History is only committed once every role has been seen. */
@@ -79,14 +93,15 @@ export function startRound(session: Session, randomInt: RandomInt = cryptoRandom
   const error = configError(session);
   if (error) return { error };
 
-  const order = activePlayers(session).map((p) => p.id);
+  const order = session.players.map((p) => p.id);
+  const keyToId = new Map(session.players.map((p) => [normaliseName(p.name), p.id]));
   const mission = selectMission(session.previousMissionId, undefined, randomInt);
-  const traitorIds = selectTraitors(
+  const traitorKeys = selectTraitors(
     {
-      playerIds: order,
+      playerIds: [...keyToId.keys()],
       traitorCount: session.traitorCount,
       history: session.history,
-      previousTraitorIds: session.previousTraitorIds,
+      previousTraitorIds: session.previousTraitors,
     },
     randomInt,
   );
@@ -98,7 +113,7 @@ export function startRound(session: Session, randomInt: RandomInt = cryptoRandom
         round: session.completedRounds + 1,
         missionId: mission.id,
         order,
-        traitorIds,
+        traitorIds: traitorKeys.map((key) => keyToId.get(key)!),
         revealIndex: 0,
         revealing: false,
       },
@@ -118,13 +133,16 @@ export function hideAndPass(session: Session): Session {
   const revealIndex = current.revealIndex + 1;
   const next = { ...current, revealing: false, revealIndex };
   if (revealIndex < current.order.length) return { ...session, current: next };
+
+  const keyOf = (id: string) => normaliseName(session.players.find((p) => p.id === id)!.name);
+  const traitors = current.traitorIds.map(keyOf);
   return {
     ...session,
     phase: 'complete',
     current: next,
     completedRounds: current.round,
-    history: recordRound(session.history, current.order, current.traitorIds),
-    previousTraitorIds: current.traitorIds,
+    history: recordRound(session.history, current.order.map(keyOf), traitors),
+    previousTraitors: traitors,
     previousMissionId: current.missionId,
   };
 }

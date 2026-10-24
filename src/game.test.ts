@@ -36,7 +36,6 @@ describe('player management', () => {
     expect(game.addPlayer(s, 'D').error).toBeTruthy();
     expect(game.removePlayer(s, 'id0')).toBe(s);
     expect(game.setTraitorCount(s, 2)).toBe(s);
-    expect(game.setPlayerActive(s, 'id0', false)).toBe(s);
   });
 });
 
@@ -66,7 +65,8 @@ describe('rounds', () => {
     s = dealAll(s);
     expect(s.phase).toBe('complete');
     expect(s.completedRounds).toBe(1);
-    expect(s.previousTraitorIds).toEqual(s.current!.traitorIds);
+    const traitorName = s.players.find((p) => p.id === s.current!.traitorIds[0])!.name;
+    expect(s.previousTraitors).toEqual([game.normaliseName(traitorName)]);
     expect(Object.values(s.history).reduce((n, h) => n + h.timesTraitor, 0)).toBe(1);
   });
 
@@ -95,9 +95,24 @@ describe('rounds', () => {
     expect(s.completedRounds).toBe(0);
   });
 
-  it('only deals to active players', () => {
-    let s = game.setPlayerActive(withPlayers(['A', 'B', 'C']), 'id1', false);
-    s = game.startRound(s).session!;
-    expect(s.current!.order).toEqual(['id0', 'id2']);
+  it('keeps history by name when a player leaves and rejoins', () => {
+    let s = dealAll(game.startRound(withPlayers(['Ana', 'Ben', 'Cal']), seededRandomInt(6)).session!);
+    s = game.returnToSetup(s);
+    const before = s.history.ana;
+    s = game.removePlayer(s, 'id0');
+    s = game.addPlayer(s, ' ANA ', 'new-id').session!;
+    expect(s.history.ana).toBe(before);
+    expect(before.roundsPlayed).toBe(1);
+  });
+
+  it('moves history to the new name on rename', () => {
+    let s = dealAll(game.startRound(withPlayers(['Ana', 'Ben']), seededRandomInt(7)).session!);
+    s = game.returnToSetup(s);
+    const ana = s.history.ana;
+    const wasTraitor = s.previousTraitors.includes('ana');
+    s = game.renamePlayer(s, 'id0', 'Anna').session!;
+    expect(s.history.anna).toBe(ana);
+    expect(s.history.ana).toBeUndefined();
+    expect(s.previousTraitors.includes('anna')).toBe(wasTraitor);
   });
 });

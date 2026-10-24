@@ -38,17 +38,19 @@ function isCurrentRound(v: unknown, playerIds: Set<string>): v is CurrentRound {
 
 /** Validates unknown data as a Session. Returns null for anything malformed or from an older version. */
 export function parseSession(data: unknown): Session | null {
-  if (!isObject(data) || data.version !== 1) return null;
+  if (!isObject(data) || data.version !== 2) return null;
   const { players, history } = data;
   if (!Array.isArray(players)) return null;
   for (const p of players) {
-    if (!isObject(p) || !isString(p.id) || !isString(p.name) || typeof p.active !== 'boolean') return null;
+    if (!isObject(p) || !isString(p.id) || !isString(p.name)) return null;
   }
   const ids = new Set(players.map((p) => p.id as string));
   if (ids.size !== players.length) return null;
+  const names = new Set(players.map((p) => (p.name as string).trim().toLocaleLowerCase()));
+  if (names.size !== players.length) return null;
   if (!isCount(data.traitorCount) || data.traitorCount < 1 || !isCount(data.completedRounds)) return null;
   if (!isObject(history) || !Object.values(history).every(isHistory)) return null;
-  if (!isStringArray(data.previousTraitorIds)) return null;
+  if (!isStringArray(data.previousTraitors)) return null;
   if (data.previousMissionId !== null && !isString(data.previousMissionId)) return null;
 
   const { phase, current } = data;

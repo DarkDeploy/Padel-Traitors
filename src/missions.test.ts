@@ -1,16 +1,16 @@
-import { getTraitorOrders, MISSIONS, selectMission, TRAITOR_BRIEFING, TRAITOR_ORDERS } from './missions';
+import { getTraitorTask, MISSIONS, selectMission, TRAITOR_TASKS } from './missions';
 import { seededRandomInt } from './test/seeded';
 
 describe('missions', () => {
-  it('have unique ids and complete content', () => {
+  it('have unique ids, content and a matching Traitor task', () => {
     expect(new Set(MISSIONS.map((m) => m.id)).size).toBe(MISSIONS.length);
     expect(MISSIONS.length).toBeGreaterThan(1);
     for (const m of MISSIONS) {
       expect(m.title).toBeTruthy();
       expect(m.description).toBeTruthy();
-      expect(m.instructions.length).toBeGreaterThan(0);
+      expect(TRAITOR_TASKS[m.id]).toBeTruthy();
     }
-    for (const id of Object.keys(TRAITOR_ORDERS)) expect(MISSIONS.some((m) => m.id === id)).toBe(true);
+    for (const id of Object.keys(TRAITOR_TASKS)) expect(MISSIONS.some((m) => m.id === id)).toBe(true);
   });
 
   it('never repeats the previous mission when alternatives exist', () => {
@@ -31,9 +31,8 @@ describe('missions', () => {
     expect(selectMission(MISSIONS[0].id, only).id).toBe(MISSIONS[0].id);
   });
 
-  it('gives Traitors the general briefing plus mission-specific orders', () => {
-    const orders = getTraitorOrders('glass-act');
-    expect(orders).toEqual([...TRAITOR_BRIEFING, ...TRAITOR_ORDERS['glass-act']]);
-    expect(getTraitorOrders('unknown')).toEqual(TRAITOR_BRIEFING);
+  it('falls back to a generic Traitor task', () => {
+    expect(getTraitorTask('glass-act')).toBe(TRAITOR_TASKS['glass-act']);
+    expect(getTraitorTask('unknown')).toBeTruthy();
   });
 });

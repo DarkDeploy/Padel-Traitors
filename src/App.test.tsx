@@ -1,11 +1,12 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
-import { getMission, TRAITOR_BRIEFING } from './missions';
+import { getMission, getTraitorTask } from './missions';
 import { STORAGE_KEY } from './storage';
 import type { Session } from './types';
 
 const stored = (): Session => JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+const roleHeading = () => screen.queryByRole('heading', { name: /^(Faithful|Traitor)$/ });
 
 function setup() {
   const user = userEvent.setup();
@@ -30,7 +31,7 @@ async function dealEveryone(user: ReturnType<typeof userEvent.setup>) {
   while (screen.queryByRole('button', { name: 'Reveal My Role' })) {
     const name = screen.getByRole('heading', { level: 1 }).textContent!;
     await user.click(screen.getByRole('button', { name: 'Reveal My Role' }));
-    const traitor = screen.queryByText('A Traitor') !== null;
+    const traitor = roleHeading()!.textContent === 'Traitor';
     seen.push({ name, traitor, mission: screen.getByRole('heading', { level: 2 }).textContent! });
     await user.click(screen.getByRole('button', { name: 'Hide & Pass Phone' }));
   }
@@ -80,10 +81,10 @@ describe('dealing', () => {
     const { user } = setup();
     await startGame(user);
 
-    expect(screen.getByText(/Player 1 of 4/)).toBeInTheDocument();
+    expect(screen.getByText('1 / 4')).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Ana');
     // No role information before the player taps Reveal.
-    expect(screen.queryByText(/Faithful$|A Traitor/)).not.toBeInTheDocument();
+    expect(roleHeading()).not.toBeInTheDocument();
 
     const seen = await dealEveryone(user);
     expect(seen.map((s) => s.name)).toEqual(['Ana', 'Ben', 'Cal', 'Dee']);
@@ -92,17 +93,17 @@ describe('dealing', () => {
     expect(new Set(seen.map((s) => s.mission)).size).toBe(1);
     expect(getMission(stored().current!.missionId)!.title).toBe(seen[0].mission);
 
-    expect(screen.getByRole('heading', { name: 'Dealing complete' })).toBeInTheDocument();
-    expect(screen.queryByText('A Traitor')).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: "Everyone's in. Go play." })).toBeInTheDocument();
+    expect(roleHeading()).not.toBeInTheDocument();
   });
 
   it('hides the role immediately when the phone is passed', async () => {
     const { user } = setup();
     await startGame(user, ['Ana', 'Ben']);
     await user.click(screen.getByRole('button', { name: 'Reveal My Role' }));
-    expect(screen.getByText(/Ana, you are/)).toBeInTheDocument();
+    expect(roleHeading()).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Hide & Pass Phone' }));
-    expect(screen.queryByText(/you are/)).not.toBeInTheDocument();
+    expect(roleHeading()).not.toBeInTheDocument();
     expect(screen.queryByText(/mission/i)).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Ben');
   });
@@ -117,15 +118,15 @@ describe('dealing', () => {
       const name = screen.getByRole('heading', { level: 1 }).textContent;
       await user.click(screen.getByRole('button', { name: 'Reveal My Role' }));
       if (name === traitorName) break;
-      expect(screen.queryByText('Your secret orders')).not.toBeInTheDocument();
+      expect(screen.queryByText('Your secret task')).not.toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: 'Hide & Pass Phone' }));
     }
-    expect(screen.getByText('A Traitor')).toBeInTheDocument();
-    expect(screen.getByText('The Faithful mission')).toBeInTheDocument();
+    expect(roleHeading()).toHaveTextContent('Traitor');
+    expect(screen.getByText('Mission')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: mission.title })).toBeInTheDocument();
     expect(screen.getByText(mission.description)).toBeInTheDocument();
-    expect(screen.getByText('Your secret orders')).toBeInTheDocument();
-    expect(screen.getByText(TRAITOR_BRIEFING[0])).toBeInTheDocument();
+    expect(screen.getByText('Your secret task')).toBeInTheDocument();
+    expect(screen.getByText(getTraitorTask(mission.id))).toBeInTheDocument();
   });
 
   it('delays the Reveal button so a double tap cannot expose the next role', async () => {
@@ -144,10 +145,10 @@ describe('next game and reset', () => {
     const first = await dealEveryone(user);
     await user.click(screen.getByRole('button', { name: 'Next Game' }));
     const dialog = screen.getByRole('alertdialog');
-    expect(dialog).toHaveTextContent('Start round 2?');
-    await user.click(within(dialog).getByRole('button', { name: 'Deal new roles' }));
+    expect(dialog).toHaveTextContent('Start next game?');
+    await user.click(within(dialog).getByRole('button', { name: 'Deal' }));
 
-    expect(screen.getByText(/Round 2 · Player 1 of 4/)).toBeInTheDocument();
+    expect(screen.getByText('1 / 4')).toBeInTheDocument();
     const second = await dealEveryone(user);
     expect(second[0].mission).not.toBe(first[0].mission);
     const firstTraitor = first.find((s) => s.traitor)!.name;
@@ -161,17 +162,18 @@ describe('next game and reset', () => {
     await dealEveryone(user);
     await user.click(screen.getByRole('button', { name: 'Next Game' }));
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
-    expect(screen.getByRole('heading', { name: 'Dealing complete' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: "Everyone's in. Go play." })).toBeInTheDocument();
   });
 
   it('resets the session after confirmation', async () => {
     const { user } = setup();
     await startGame(user, ['Ana', 'Ben']);
     await dealEveryone(user);
-    await user.click(screen.getByRole('button', { name: 'Reset session' }));
-    await user.click(screen.getByRole('button', { name: 'Reset everything' }));
+    await user.click(screen.getByRole('button', { name: 'Edit players' }));
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
+    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Reset' }));
     expect(screen.getByRole('button', { name: 'Start Game' })).toBeInTheDocument();
-    expect(screen.getByText('No players yet.')).toBeInTheDocument();
+    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
   });
 
@@ -179,10 +181,10 @@ describe('next game and reset', () => {
     const { user } = setup();
     await startGame(user, ['Ana', 'Ben']);
     await dealEveryone(user);
-    await user.click(screen.getByRole('button', { name: 'Edit players or Traitors' }));
+    await user.click(screen.getByRole('button', { name: 'Edit players' }));
     await addPlayers(user, ['Cal']);
-    await user.click(screen.getByRole('button', { name: 'Start Round 2' }));
-    expect(screen.getByText(/Round 2 · Player 1 of 3/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Start Next Game' }));
+    expect(screen.getByText('1 / 3')).toBeInTheDocument();
   });
 });
 
@@ -198,9 +200,9 @@ describe('persistence', () => {
 
     render(<App passDelayMs={0} />);
     // Ben's card is hidden again after the refresh, and it is still Ben's turn.
-    expect(screen.queryByText(/you are/)).not.toBeInTheDocument();
+    expect(roleHeading()).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Ben');
-    expect(screen.getByText(/Player 2 of 4/)).toBeInTheDocument();
+    expect(screen.getByText('2 / 4')).toBeInTheDocument();
     const after = stored();
     expect(after.current!.traitorIds).toEqual(before.current!.traitorIds);
     expect(after.current!.missionId).toBe(before.current!.missionId);
@@ -208,31 +210,31 @@ describe('persistence', () => {
 
   it('restores a valid saved setup', () => {
     const session: Session = {
-      version: 1,
+      version: 2,
       phase: 'setup',
       players: [
-        { id: 'a', name: 'Ana', active: true },
-        { id: 'b', name: 'Ben', active: false },
+        { id: 'a', name: 'Ana' },
+        { id: 'b', name: 'Ben' },
       ],
       traitorCount: 1,
       completedRounds: 3,
-      history: { a: { timesTraitor: 2, fairShare: 1.5, roundsPlayed: 3 } },
-      previousTraitorIds: ['a'],
+      history: { ana: { timesTraitor: 2, fairShare: 1.5, roundsPlayed: 3 } },
+      previousTraitors: ['ana'],
       previousMissionId: 'glass-act',
       current: null,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
     render(<App passDelayMs={0} />);
     expect(screen.getByText('Ana')).toBeInTheDocument();
-    expect(screen.getByText('Sitting out')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Start Round 4' })).toBeInTheDocument();
+    expect(screen.getByText('Ben')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Start Next Game' })).toBeInTheDocument();
   });
 
   it('shows an error screen for malformed saved data and can start fresh', async () => {
-    localStorage.setItem(STORAGE_KEY, '{"version":1,"players":"oops"}');
+    localStorage.setItem(STORAGE_KEY, '{"version":2,"players":"oops"}');
     const { user } = setup();
-    expect(screen.getByText("We couldn't read the saved session")).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Start a fresh session' }));
+    expect(screen.getByText("Saved game couldn't be loaded")).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Start fresh' }));
     expect(screen.getByRole('button', { name: 'Start Game' })).toBeInTheDocument();
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
   });

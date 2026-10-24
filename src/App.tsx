@@ -64,7 +64,6 @@ export default function App({ passDelayMs = 700 }: AppProps) {
     screen = current.revealing ? (
       <RevealScreen
         key={`reveal-${current.revealIndex}`}
-        name={player.name}
         role={game.roleOf(session, player.id)}
         missionId={current.missionId}
         onHide={() => update(game.hideAndPass)}
@@ -73,7 +72,6 @@ export default function App({ passDelayMs = 700 }: AppProps) {
       <HandoverScreen
         key={`handover-${current.round}-${current.revealIndex}`}
         name={player.name}
-        round={current.round}
         position={current.revealIndex + 1}
         total={current.order.length}
         delayMs={passDelayMs}
@@ -83,13 +81,7 @@ export default function App({ passDelayMs = 700 }: AppProps) {
     );
   } else if (session.phase === 'complete' && current) {
     screen = (
-      <CompleteScreen
-        round={current.round}
-        playerCount={current.order.length}
-        onNextGame={() => setDialog('next')}
-        onEditPlayers={() => update(game.returnToSetup)}
-        onReset={() => setDialog('reset')}
-      />
+      <CompleteScreen onNextGame={() => setDialog('next')} onEditPlayers={() => update(game.returnToSetup)} />
     );
   } else {
     screen = (
@@ -98,7 +90,6 @@ export default function App({ passDelayMs = 700 }: AppProps) {
         onAdd={(name) => apply((s) => game.addPlayer(s, name))}
         onRename={(id, name) => apply((s) => game.renamePlayer(s, id, name))}
         onRemove={(id) => update((s) => game.removePlayer(s, id))}
-        onToggleActive={(id, active) => update((s) => game.setPlayerActive(s, id, active))}
         onTraitorCount={(n) => update((s) => game.setTraitorCount(s, n))}
         onStart={() => apply((s) => game.startRound(s))}
         onReset={() => setDialog('reset')}
@@ -110,27 +101,27 @@ export default function App({ passDelayMs = 700 }: AppProps) {
     <>
       {saveFailed && (
         <p className="banner" role="status">
-          This browser isn't saving the session, so a refresh will lose it. Keep this tab open.
+          Not saving on this browser — keep this tab open.
         </p>
       )}
       {screen}
       {dialog === 'next' && (
         <ConfirmDialog
-          title={`Start round ${session.completedRounds + 1}?`}
-          confirmLabel="Deal new roles"
+          title="Start next game?"
+          confirmLabel="Deal"
           onConfirm={() => {
             setDialog(null);
             apply((s) => game.startRound(s));
           }}
           onCancel={() => setDialog(null)}
         >
-          Same players, new mission, new secret roles. Pass the phone to the first player once roles are dealt.
+          New roles and a new mission.
         </ConfirmDialog>
       )}
       {dialog === 'abandon' && (
         <ConfirmDialog
           title="Abandon this deal?"
-          confirmLabel="Back to setup"
+          confirmLabel="Abandon"
           danger
           onConfirm={() => {
             setDialog(null);
@@ -138,18 +129,18 @@ export default function App({ passDelayMs = 700 }: AppProps) {
           }}
           onCancel={() => setDialog(null)}
         >
-          Roles for this round will be thrown away and dealt again from scratch. Traitor history is kept.
+          Roles will be dealt again.
         </ConfirmDialog>
       )}
       {dialog === 'reset' && (
         <ConfirmDialog
-          title="Reset the session?"
-          confirmLabel="Reset everything"
+          title="Reset everything?"
+          confirmLabel="Reset"
           danger
           onConfirm={resetSession}
           onCancel={() => setDialog(null)}
         >
-          This deletes all players, Traitor history and the current round from this browser. It can't be undone.
+          All players and history will be deleted.
         </ConfirmDialog>
       )}
     </>

@@ -3,15 +3,12 @@ export type Role = 'faithful' | 'traitor';
 export interface Player {
   id: string;
   name: string;
-  /** Inactive players are kept (with their history) but sit out of rounds. */
-  active: boolean;
 }
 
 export interface Mission {
   id: string;
   title: string;
   description: string;
-  instructions: string[];
 }
 
 /** Per-player record used by the fair rotation algorithm. */
@@ -26,6 +23,7 @@ export interface PlayerHistory {
   roundsPlayed: number;
 }
 
+/** Keyed by normalised player name, so a player who leaves and rejoins keeps their record. */
 export type TraitorHistory = Record<string, PlayerHistory>;
 
 export interface CurrentRound {
@@ -43,14 +41,14 @@ export interface CurrentRound {
 export type Phase = 'setup' | 'dealing' | 'complete';
 
 export interface Session {
-  version: 1;
+  version: 2;
   phase: Phase;
   players: Player[];
   traitorCount: number;
   completedRounds: number;
   history: TraitorHistory;
-  /** Traitors from the last completed round. */
-  previousTraitorIds: string[];
+  /** Normalised names of the Traitors from the last completed round. */
+  previousTraitors: string[];
   /** Mission from the last completed round. */
   previousMissionId: string | null;
   current: CurrentRound | null;
