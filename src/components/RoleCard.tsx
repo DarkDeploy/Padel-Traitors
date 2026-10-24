@@ -21,9 +21,6 @@ export default function RoleCard({ role, faithfulMissionId, courtDareId, sideDar
   return (
     <article className={`role-card ${traitor ? 'card-traitor' : 'card-faithful'}`}>
       <header className="role-header">
-        <span className="role-icon" aria-hidden="true">
-          {traitor ? '🗡️' : '🛡️'}
-        </span>
         <h2 className="role-name">{traitor ? 'Traitor' : 'Faithful'}</h2>
         <p className="role-sub">
           {traitor

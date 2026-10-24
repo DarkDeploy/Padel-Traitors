@@ -19,16 +19,18 @@ export default function HowToPlay({ onClose }: { onClose: () => void }) {
             <strong>Faithful</strong> share one habit to lean into on court. Subtle — the Traitors are watching.
           </li>
           <li>
-            <strong>Traitors</strong> know each other and share one risky dare. Spot the habit, copy it, blend in.
+            <strong>Traitors</strong> know each other and share a risky dare (two if someone sits out — either
+            counts). Spot the habit, copy it, blend in.
           </li>
           <li>
             <strong>Play your game</strong>, agree on one suspect, then reveal.
           </li>
         </ol>
         <p className="muted small">
-          One question decides it: did the Traitors get caught? Named as the suspect, or never did the dare, means caught
-          and the Faithful win. Otherwise the Traitors win.
+          One question decides it: did the Traitors get caught? Named as the suspect, or no dare happened, means
+          caught and the Faithful win. Otherwise the Traitors win.
         </p>
+        <p className="muted small">Everything is saved on this phone only.</p>
         <button className="btn btn-primary btn-block" onClick={onClose}>
           Got it
         </button>

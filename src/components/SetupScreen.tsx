@@ -116,7 +116,6 @@ export default function SetupScreen(props: Props) {
         <button className="btn-text" onClick={onReset}>
           Reset
         </button>
-        <p className="small">Saved on this phone only.</p>
       </footer>
       {showHelp && <HowToPlay onClose={() => setShowHelp(false)} />}
     </main>
@@ -169,6 +168,9 @@ function PlayerRow({
 
   return (
     <li className="player">
+      <span className="avatar" aria-hidden="true">
+        {player.name.trim().charAt(0).toUpperCase()}
+      </span>
       <button
         className="player-name"
         aria-label={`Edit ${player.name}`}
