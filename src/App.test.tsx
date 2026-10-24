@@ -65,7 +65,8 @@ describe('setup', () => {
     const start = screen.getByRole('button', { name: 'Start Game' });
     expect(start).toBeDisabled();
     await addPlayers(user, ['Ana']);
-    expect(screen.getByText('Add at least two players.')).toBeInTheDocument();
+    expect(start).toBeDisabled();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     await addPlayers(user, [' ANA ']);
     expect(screen.getByText('ANA is already playing.')).toBeInTheDocument();
     await user.clear(screen.getByLabelText('Player name'));

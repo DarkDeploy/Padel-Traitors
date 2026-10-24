@@ -21,9 +21,8 @@ export default function SetupScreen(props: Props) {
 
   const count = session.players.length;
   const maxTraitors = Math.max(1, count - 1);
+  // Config problems (too few players, no Faithful) just disable Start; the UI makes them obvious.
   const problem = configError(session);
-  // Don't nag before anyone has been added.
-  const shownError = error ?? (count > 0 ? problem : null);
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -94,9 +93,9 @@ export default function SetupScreen(props: Props) {
       </div>
 
       <div className="start">
-        {shownError && (
+        {error && (
           <p className="error" role="alert">
-            {shownError}
+            {error}
           </p>
         )}
         <button

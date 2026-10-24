@@ -1,25 +1,26 @@
-/* ───────── Tokens: deep castle green, candle gold, traitor red ───────── */
+/* ───────── Tokens: Traitors maroon, flame orange, parchment ───────── */
 
 :root {
-  --bg: #07100c;
-  --bg-glow: #0f2219;
-  --surface: #0e1b15;
-  --surface-2: #15261e;
-  --line: rgba(216, 201, 160, 0.1);
-  --line-strong: rgba(216, 201, 160, 0.2);
-  --text: #f1ebdd;
-  --muted: #9aa89b;
-  --gold: #b8a271;
-  --gold-soft: rgba(184, 162, 113, 0.5);
-  --faithful: #e9dcb8;
-  --traitor: #ff5a5f;
-  --traitor-deep: #7a1a21;
-  --traitor-surface: #1a0d10;
-  --focus: #cdbb8a;
+  --bg: #3a0a22;
+  --bg-glow: #5a1034;
+  --surface: #4a0e2b;
+  --surface-2: #5c1537;
+  --line: rgba(255, 225, 205, 0.12);
+  --line-strong: rgba(255, 225, 205, 0.22);
+  --text: #fbf2e8;
+  --muted: #d6aabb;
+  --accent: #f7931e;
+  --accent-deep: #b85d0c;
+  --accent-surface: #3f1608;
+  --faithful: #fbf2e8;
+  --traitor: var(--accent);
+  --traitor-deep: var(--accent-deep);
+  --traitor-surface: var(--accent-surface);
+  --focus: var(--accent);
   --r: 20px;
   --r-pill: 999px;
   --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+  --display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   color-scheme: dark;
 }
@@ -47,7 +48,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   background:
     radial-gradient(ellipse 120% 60% at 50% -20%, var(--bg-glow), transparent 70%),
-    radial-gradient(ellipse 80% 40% at 50% 120%, rgba(184, 162, 113, 0.04), transparent 70%),
+    radial-gradient(ellipse 80% 40% at 50% 120%, rgba(247, 147, 30, 0.08), transparent 70%),
     var(--bg);
   background-attachment: fixed;
 }
@@ -62,9 +63,9 @@ p {
 h1 {
   font-family: var(--display);
   font-size: 2rem;
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
 h2 {
@@ -99,11 +100,11 @@ h2 {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--muted);
 }
 
 .error {
-  color: #ff8a90;
+  color: #ffb08a;
   font-size: 0.92rem;
 }
 
@@ -179,7 +180,7 @@ h2 {
 
 .btn-primary {
   background: var(--text);
-  color: #0c1710;
+  color: var(--bg);
 }
 
 .btn-ghost {
@@ -189,9 +190,8 @@ h2 {
 
 .btn-danger,
 .btn-traitor {
-  background: linear-gradient(180deg, #9a2530, var(--traitor-deep));
-  color: #fff;
-  box-shadow: 0 8px 24px rgba(255, 90, 95, 0.15);
+  background: var(--accent);
+  color: #2a0a04;
 }
 
 .btn-large {
@@ -247,8 +247,13 @@ h2 {
 }
 
 :is(.btn, .btn-text, .corner-btn, .player-name, input):focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
 }
 
 input {
@@ -266,7 +271,7 @@ input {
 }
 
 input:focus {
-  border-color: var(--gold-soft);
+  border-color: var(--line-strong);
 }
 
 input::placeholder {
@@ -278,10 +283,12 @@ input::placeholder {
 .brand {
   font-size: 2.2rem;
   padding: 16px 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
 }
 
 .brand span {
-  color: var(--traitor);
+  color: var(--accent);
 }
 
 .add-form,
@@ -374,9 +381,9 @@ input::placeholder {
 .stepper output {
   min-width: 2ch;
   text-align: center;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 1.2rem;
-  color: var(--traitor);
+  color: var(--accent);
 }
 
 .start {
@@ -411,7 +418,9 @@ input::placeholder {
 }
 
 .handover-name {
-  font-size: clamp(2.6rem, 13vw, 4rem);
+  font-size: clamp(2.8rem, 14vw, 4.4rem);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
   overflow-wrap: anywhere;
   animation: rise 0.4s var(--ease) both;
 }
@@ -464,8 +473,8 @@ input::placeholder {
   border-radius: 50%;
   border: 1px solid var(--line-strong);
   box-shadow:
-    0 0 0 12px rgba(241, 235, 221, 0.03),
-    0 0 0 24px rgba(241, 235, 221, 0.015);
+    0 0 0 12px rgba(251, 242, 232, 0.03),
+    0 0 0 24px rgba(251, 242, 232, 0.015);
   animation: pulse 2.8s ease-in-out infinite;
 }
 
@@ -479,10 +488,10 @@ input::placeholder {
 
 .hold-btn[aria-pressed='true'] .hold-ring {
   animation: none;
-  border-color: var(--text);
+  border-color: var(--accent);
   box-shadow:
-    0 0 0 14px rgba(241, 235, 221, 0.07),
-    0 0 40px rgba(184, 162, 113, 0.18);
+    0 0 0 14px rgba(247, 147, 30, 0.1),
+    0 0 48px rgba(247, 147, 30, 0.25);
 }
 
 .hold-label {
@@ -529,15 +538,15 @@ input::placeholder {
 }
 
 .card-faithful {
-  background: linear-gradient(170deg, #142319, var(--surface));
-  border: 1px solid rgba(184, 162, 113, 0.3);
-  box-shadow: 0 24px 60px rgba(184, 162, 113, 0.08);
+  background: linear-gradient(170deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
 }
 
 .card-traitor {
-  background: linear-gradient(170deg, #241014, var(--traitor-surface));
-  border: 1px solid rgba(255, 90, 95, 0.4);
-  box-shadow: 0 24px 60px rgba(255, 90, 95, 0.12);
+  background: linear-gradient(170deg, #4d1d0a, var(--accent-surface));
+  border: 1px solid rgba(247, 147, 30, 0.5);
+  box-shadow: 0 24px 60px rgba(247, 147, 30, 0.15);
 }
 
 .role-header {
@@ -552,7 +561,10 @@ input::placeholder {
 .role-name {
   font-family: var(--display);
   font-size: clamp(2.6rem, 12vw, 3.6rem);
+  font-weight: 800;
   line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
 }
 
 .card-faithful .role-name {
@@ -569,7 +581,7 @@ input::placeholder {
 }
 
 .card-traitor .role-sub {
-  color: #ffb0b4;
+  color: #ffc896;
 }
 
 .card-section {
@@ -584,7 +596,8 @@ input::placeholder {
 }
 
 .card-traitor .card-section {
-  border-color: rgba(255, 90, 95, 0.18);
+  border-color: rgba(247, 147, 30, 0.22);
+  color: #e9c9b4;
 }
 
 .card-traitor .label {
@@ -593,9 +606,10 @@ input::placeholder {
 
 .card-section h3 {
   font-family: var(--display);
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.45rem;
+  font-weight: 800;
   line-height: 1.15;
+  letter-spacing: -0.01em;
   color: var(--text);
 }
 
@@ -645,7 +659,8 @@ input::placeholder {
 .reveal-block h2 {
   font-family: var(--display);
   font-size: 1.8rem;
-  font-weight: 600;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--faithful);
 }
 
@@ -655,8 +670,8 @@ input::placeholder {
 }
 
 .reveal-traitors {
-  background: linear-gradient(170deg, #241014, var(--traitor-surface));
-  border-color: rgba(255, 90, 95, 0.4);
+  background: linear-gradient(170deg, #4d1d0a, var(--accent-surface));
+  border-color: rgba(247, 147, 30, 0.5);
 }
 
 .reveal-traitors h2,
@@ -690,7 +705,7 @@ input::placeholder {
   position: fixed;
   inset: 0;
   z-index: 10;
-  background: rgba(3, 8, 5, 0.7);
+  background: rgba(20, 3, 12, 0.7);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   display: flex;
@@ -724,6 +739,8 @@ input::placeholder {
 .dialog h2 {
   font-family: var(--display);
   font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .dialog > p {
@@ -809,7 +826,7 @@ input::placeholder {
 @keyframes pulse {
   50% {
     transform: scale(1.03);
-    border-color: rgba(184, 162, 113, 0.45);
+    border-color: rgba(247, 147, 30, 0.45);
   }
 }
 
