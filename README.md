@@ -20,7 +20,9 @@ At the end of the block the group agrees out loud on **one suspect**, then the a
 1. **Setup** — add players (tap a name to edit it, × to remove), choose the number of Traitors, tap **Start Game**.
 2. **Pass the phone** — the named player presses and holds **Hold to view**; the card shows only while held. They tap **Done — pass to …**. **‹ Back** returns to the previous player if someone forgot.
 3. **Play** — a 15–20 minute block. **Check my role** lets anyone re-read their card.
-4. **End round & reveal**, then **Next Game** for new roles and missions with the same players, or **Edit players** first.
+4. **End round & reveal** — the Faithful mission, then the Traitors, revealed one tap at a time. Then **Next Game** for new roles and missions with the same players, or **Edit players** first.
+
+On an iPhone, use Share → **Add to Home Screen** to open it full-screen like an app.
 
 Traitor history is remembered by name, so a player who leaves and is added again later keeps their record.
 

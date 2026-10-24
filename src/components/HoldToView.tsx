@@ -34,6 +34,7 @@ export default function HoldToView({ children, onViewed, delayMs }: Props) {
   function start() {
     if (!ready) return;
     setHolding(true);
+    navigator.vibrate?.(15);
     onViewed();
   }
 

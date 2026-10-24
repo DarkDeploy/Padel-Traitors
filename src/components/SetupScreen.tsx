@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import HowToPlay from './HowToPlay';
 import { configError, MAX_NAME_LENGTH } from '../game';
 import type { Player, Session } from '../types';
 
@@ -16,6 +17,7 @@ export default function SetupScreen(props: Props) {
   const { session, onAdd, onTraitorCount, onStart, onReset } = props;
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
 
   const count = session.players.length;
   const maxTraitors = Math.max(1, count - 1);
@@ -107,11 +109,16 @@ export default function SetupScreen(props: Props) {
       </div>
 
       <footer className="footnote">
-        Saved on this phone ·{' '}
+        <button className="btn-text" onClick={() => setShowHelp(true)}>
+          How it works
+        </button>
+        {' · '}
         <button className="btn-text" onClick={onReset}>
           Reset
         </button>
+        <p className="small">Saved on this phone only.</p>
       </footer>
+      {showHelp && <HowToPlay onClose={() => setShowHelp(false)} />}
     </main>
   );
 }

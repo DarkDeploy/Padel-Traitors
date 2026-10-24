@@ -123,7 +123,7 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         />
       );
     } else {
-      screen = <PlayingScreen onCheckRole={() => setRecheck({ step: 'pick' })} onEndRound={() => setDialog('reveal')} />;
+      screen = <PlayingScreen round={current.round} onCheckRole={() => setRecheck({ step: 'pick' })} onEndRound={() => setDialog('reveal')} />;
     }
   } else if (session.phase === 'revealed' && current) {
     screen = (

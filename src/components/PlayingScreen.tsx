@@ -1,14 +1,16 @@
 interface Props {
+  round: number;
   onCheckRole: () => void;
   onEndRound: () => void;
 }
 
-export default function PlayingScreen({ onCheckRole, onEndRound }: Props) {
+export default function PlayingScreen({ round, onCheckRole, onEndRound }: Props) {
   return (
     <main className="screen screen-center">
       <div className="seal" aria-hidden="true">
         ✓
       </div>
+      <p className="label">Round {round}</p>
       <h1>Everyone's in. Go play.</h1>
       <p className="muted">Come back when the block is over.</p>
       <div className="stack">
