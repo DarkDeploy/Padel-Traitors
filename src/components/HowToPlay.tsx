@@ -25,10 +25,7 @@ export default function HowToPlay({ onClose }: { onClose: () => void }) {
             <strong>Play your game</strong>, then agree out loud on one suspect and hit reveal.
           </li>
         </ol>
-        <p className="muted small">
-          Traitors win if they did their dare and weren't the suspect. Otherwise the Faithful win if they stuck to their
-          habit or caught a Traitor. Neither? Traitors win.
-        </p>
+        <p className="muted small">The win rules are shown at the reveal.</p>
         <button className="btn btn-primary btn-block" onClick={onClose}>
           Got it
         </button>

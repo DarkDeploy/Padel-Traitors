@@ -92,7 +92,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  animation: fade-in 0.25s ease-out;
+  animation: enter 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .screen-center {
@@ -390,6 +390,17 @@ input {
   -webkit-touch-callout: none;
   display: grid;
   place-items: center;
+  transition: transform 0.15s ease;
+}
+
+.hold-btn[aria-pressed='true'] {
+  transform: scale(0.96);
+}
+
+.hold-btn[aria-pressed='true'] .hold-ring {
+  animation: none;
+  border-color: var(--text);
+  box-shadow: 0 0 0 14px rgba(242, 240, 235, 0.08);
 }
 
 .hold-btn:disabled {
@@ -421,6 +432,7 @@ input {
   z-index: 20;
   pointer-events: none;
   background: var(--bg);
+  animation: fade-in 0.15s ease-out;
   padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
@@ -448,7 +460,7 @@ input {
   flex-direction: column;
   gap: 18px;
   text-align: left;
-  animation: reveal 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: reveal 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .card-faithful {
@@ -722,6 +734,13 @@ input {
   }
 }
 
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -739,7 +758,7 @@ input {
 @keyframes reveal {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
+    transform: translateY(14px) scale(0.96);
   }
 }
 

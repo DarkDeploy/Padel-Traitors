@@ -106,7 +106,11 @@ describe('dealing', () => {
 
     fireEvent.pointerDown(holdButton());
     expect(card()).toBeInTheDocument();
-    fireEvent.pointerUp(holdButton());
+    // Moving the finger around (even off the button) keeps the card up.
+    fireEvent.pointerMove(document.body, { clientX: 10, clientY: 500 });
+    fireEvent.pointerLeave(holdButton());
+    expect(card()).toBeInTheDocument();
+    fireEvent.pointerUp(document.body);
     expect(card()).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Done — pass to Ben' }));

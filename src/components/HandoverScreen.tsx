@@ -29,7 +29,7 @@ export default function HandoverScreen(props: Props) {
       </button>
 
       <div className="handover-top">
-        <p className="muted">{viewed ? 'Got it?' : 'Pass the phone to'}</p>
+        <p className="muted">{viewed ? 'Hold again any time' : 'Pass the phone to'}</p>
         <h1 className="handover-name">{name}</h1>
       </div>
 
@@ -43,7 +43,7 @@ export default function HandoverScreen(props: Props) {
             {doneLabel}
           </button>
         ) : (
-          <p className="muted small">Only {name} should look.</p>
+          <p className="muted small">Eyes away, everyone else.</p>
         )}
         <div className="handover-meta">
           {previousName && onPrevious ? (
