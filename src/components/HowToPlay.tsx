@@ -25,7 +25,10 @@ export default function HowToPlay({ onClose }: { onClose: () => void }) {
             <strong>Play your game</strong>, agree on one suspect, then reveal.
           </li>
         </ol>
-        <p className="muted small">Traitors win only by pulling off the dare without being the suspect. Otherwise, Faithful win.</p>
+        <p className="muted small">
+          One question decides it: did the Traitors get caught? Named as the suspect, or never did the dare, means caught
+          and the Faithful win. Otherwise the Traitors win.
+        </p>
         <button className="btn btn-primary btn-block" onClick={onClose}>
           Got it
         </button>

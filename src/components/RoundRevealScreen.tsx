@@ -42,7 +42,7 @@ export default function RoundRevealScreen(props: Props) {
         <p className="mission-text">
           The dare — <strong>{traitor?.title}</strong>: {traitor?.text}
         </p>
-        <p className="muted small">Did they pull it off?</p>
+        <p className="muted small">Did they pull it off? Were they the suspect?</p>
       </section>
 
       {step === 1 ? (
@@ -65,13 +65,12 @@ export default function RoundRevealScreen(props: Props) {
           </section>
 
           <section className="rules">
-            <p className="label">Who won?</p>
+            <p className="label">Did the Traitors get caught?</p>
             <ol>
+              <li>Named as the suspect — caught.</li>
+              <li>Never did the dare — counts as caught.</li>
               <li>
-                <strong>Traitors win</strong> if they pulled off the dare and weren't the suspect.
-              </li>
-              <li>
-                Otherwise, <strong>Faithful win</strong>.
+                Caught? <strong>Faithful win.</strong> Otherwise, <strong>Traitors win.</strong>
               </li>
             </ol>
           </section>

@@ -209,7 +209,7 @@ describe('playing and reveal', () => {
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     expect(screen.getByText(getFaithfulMission(faithfulMissionId)!.text)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: seen.find((s) => s.traitor)!.name })).toBeInTheDocument();
-    expect(screen.getByText('Who won?')).toBeInTheDocument();
+    expect(screen.getByText('Did the Traitors get caught?')).toBeInTheDocument();
     expect(stored().phase).toBe('revealed');
   });
 

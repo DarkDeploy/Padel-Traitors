@@ -11,10 +11,9 @@ Everything runs in the browser. There is no backend, database, account or API ke
 
 At the end of the game the group agrees out loud on **one suspect**, then the app unmasks the Traitors, lets them guess the Faithful mission, and reveals it.
 
-1. **Traitors win** if they pulled off the dare and weren't the suspect.
-2. Otherwise, **Faithful win.**
+One question decides it: **did the Traitors get caught?** Named as the suspect, or never did the dare, counts as caught and the Faithful win. Otherwise the Traitors win.
 
-The Faithful mission isn't scored: it's what the Traitors have to spot and copy to blend in, and what gives away a Traitor who doesn't.
+The Faithful mission isn't scored: it's camouflage. Traitors spot it and copy it to avoid being caught; a Traitor who doesn't stands out.
 
 ## How to play
 
