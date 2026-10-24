@@ -1,38 +1,42 @@
-import { getTraitorTask, MISSIONS, selectMission, TRAITOR_TASKS } from './missions';
+import { MISSIONS, selectMissions } from './missions';
 import { seededRandomInt } from './test/seeded';
 
 describe('missions', () => {
-  it('have unique ids, content and a matching Traitor task', () => {
+  it('have unique ids and text for both sides', () => {
     expect(new Set(MISSIONS.map((m) => m.id)).size).toBe(MISSIONS.length);
-    expect(MISSIONS.length).toBeGreaterThan(1);
+    expect(MISSIONS.length).toBeGreaterThanOrEqual(20);
     for (const m of MISSIONS) {
       expect(m.title).toBeTruthy();
-      expect(m.description).toBeTruthy();
-      expect(TRAITOR_TASKS[m.id]).toBeTruthy();
+      expect(m.faithful).toBeTruthy();
+      expect(m.traitor).toBeTruthy();
     }
-    for (const id of Object.keys(TRAITOR_TASKS)) expect(MISSIONS.some((m) => m.id === id)).toBe(true);
   });
 
-  it('never repeats the previous mission when alternatives exist', () => {
+  it('gives each side a different mission and avoids repeats between rounds', () => {
     const rng = seededRandomInt(42);
-    let previous: string | null = null;
+    let prevF: string | null = null;
+    let prevT: string | null = null;
     const seen = new Set<string>();
-    for (let i = 0; i < 200; i++) {
-      const mission = selectMission(previous, MISSIONS, rng);
-      expect(mission.id).not.toBe(previous);
-      seen.add(mission.id);
-      previous = mission.id;
+    for (let i = 0; i < 300; i++) {
+      const { faithful, traitor } = selectMissions(prevF, prevT, MISSIONS, rng);
+      expect(faithful.id).not.toBe(traitor.id);
+      expect(faithful.id).not.toBe(prevF);
+      expect(traitor.id).not.toBe(prevT);
+      seen.add(faithful.id);
+      prevF = faithful.id;
+      prevT = traitor.id;
     }
     expect(seen.size).toBe(MISSIONS.length);
   });
 
-  it('reuses the only mission when there is no alternative', () => {
-    const only = [MISSIONS[0]];
-    expect(selectMission(MISSIONS[0].id, only).id).toBe(MISSIONS[0].id);
+  it('still works with only two missions', () => {
+    const two = MISSIONS.slice(0, 2);
+    const { faithful, traitor } = selectMissions(two[0].id, two[1].id, two);
+    expect(faithful.id).toBe(two[1].id);
+    expect(traitor.id).toBe(two[0].id);
   });
 
-  it('falls back to a generic Traitor task', () => {
-    expect(getTraitorTask('glass-act')).toBe(TRAITOR_TASKS['glass-act']);
-    expect(getTraitorTask('unknown')).toBeTruthy();
+  it('needs at least two missions', () => {
+    expect(() => selectMissions(null, null, MISSIONS.slice(0, 1))).toThrow();
   });
 });

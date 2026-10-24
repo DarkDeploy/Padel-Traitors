@@ -1,5 +1,5 @@
 import { recordRound, selectTraitors, validateConfig } from './allocation';
-import { selectMission } from './missions';
+import { selectMissions } from './missions';
 import { createId, cryptoRandomInt, type RandomInt } from './random';
 import type { Player, Role, Session } from './types';
 
@@ -7,14 +7,15 @@ export const MAX_NAME_LENGTH = 24;
 
 export function createSession(): Session {
   return {
-    version: 2,
+    version: 3,
     phase: 'setup',
     players: [],
     traitorCount: 1,
     completedRounds: 0,
     history: {},
     previousTraitors: [],
-    previousMissionId: null,
+    previousFaithfulMissionId: null,
+    previousTraitorMissionId: null,
     current: null,
   };
 }
@@ -87,7 +88,7 @@ export function configError(session: Session): string | null {
   return validateConfig(session.players.length, session.traitorCount);
 }
 
-/** Deals a new round (first game or next game). History is only committed once every role has been seen. */
+/** Deals a new round (first game or next game). History is only committed once every player has seen their card. */
 export function startRound(session: Session, randomInt: RandomInt = cryptoRandomInt): Result {
   if (session.phase === 'dealing') return { error: 'Roles are already being dealt.' };
   const error = configError(session);
@@ -95,7 +96,12 @@ export function startRound(session: Session, randomInt: RandomInt = cryptoRandom
 
   const order = session.players.map((p) => p.id);
   const keyToId = new Map(session.players.map((p) => [normaliseName(p.name), p.id]));
-  const mission = selectMission(session.previousMissionId, undefined, randomInt);
+  const missions = selectMissions(
+    session.previousFaithfulMissionId,
+    session.previousTraitorMissionId,
+    undefined,
+    randomInt,
+  );
   const traitorKeys = selectTraitors(
     {
       playerIds: [...keyToId.keys()],
@@ -111,40 +117,57 @@ export function startRound(session: Session, randomInt: RandomInt = cryptoRandom
       phase: 'dealing',
       current: {
         round: session.completedRounds + 1,
-        missionId: mission.id,
+        faithfulMissionId: missions.faithful.id,
+        traitorMissionId: missions.traitor.id,
         order,
         traitorIds: traitorKeys.map((key) => keyToId.get(key)!),
         revealIndex: 0,
-        revealing: false,
+        viewed: false,
       },
     },
   };
 }
 
-export function revealRole(session: Session): Session {
+/** The current player has looked at their card. */
+export function markViewed(session: Session): Session {
   const { current } = session;
-  if (session.phase !== 'dealing' || !current || current.revealing) return session;
-  return { ...session, current: { ...current, revealing: true } };
+  if (session.phase !== 'dealing' || !current || current.viewed) return session;
+  return { ...session, current: { ...current, viewed: true } };
 }
 
-export function hideAndPass(session: Session): Session {
+/** Hands the phone to the next player; after the last player the round starts. */
+export function passPhone(session: Session): Session {
   const { current } = session;
-  if (session.phase !== 'dealing' || !current || !current.revealing) return session;
+  if (session.phase !== 'dealing' || !current || !current.viewed) return session;
   const revealIndex = current.revealIndex + 1;
-  const next = { ...current, revealing: false, revealIndex };
+  const next = { ...current, viewed: false, revealIndex };
   if (revealIndex < current.order.length) return { ...session, current: next };
 
   const keyOf = (id: string) => normaliseName(session.players.find((p) => p.id === id)!.name);
   const traitors = current.traitorIds.map(keyOf);
   return {
     ...session,
-    phase: 'complete',
+    phase: 'playing',
     current: next,
     completedRounds: current.round,
     history: recordRound(session.history, current.order.map(keyOf), traitors),
     previousTraitors: traitors,
-    previousMissionId: current.missionId,
+    previousFaithfulMissionId: current.faithfulMissionId,
+    previousTraitorMissionId: current.traitorMissionId,
   };
+}
+
+/** Hands the phone back to the previous player, e.g. if they forgot their role. */
+export function goBack(session: Session): Session {
+  const { current } = session;
+  if (session.phase !== 'dealing' || !current || current.revealIndex === 0) return session;
+  return { ...session, current: { ...current, revealIndex: current.revealIndex - 1, viewed: false } };
+}
+
+/** Ends the round: the missions and the Traitors are shown to everyone. */
+export function revealRound(session: Session): Session {
+  if (session.phase !== 'playing') return session;
+  return { ...session, phase: 'revealed' };
 }
 
 /** Back to setup. An unfinished deal is abandoned and does not count towards history. */
@@ -159,4 +182,9 @@ export function currentPlayer(session: Session): Player | undefined {
 
 export function roleOf(session: Session, playerId: string): Role {
   return session.current?.traitorIds.includes(playerId) ? 'traitor' : 'faithful';
+}
+
+export function traitorNames(session: Session): string[] {
+  const ids = session.current?.traitorIds ?? [];
+  return session.players.filter((p) => ids.includes(p.id)).map((p) => p.name);
 }

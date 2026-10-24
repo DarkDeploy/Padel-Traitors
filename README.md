@@ -1,15 +1,27 @@
 # Padel Traitors
 
-A mobile-first web app for playing a Traitors-style social deduction game during padel sessions. One phone is passed around: each player privately sees whether they are **Faithful** or a **Traitor**, plus the round's mission. Traitors see the same Faithful mission along with their secret orders.
+A mobile-first web app for playing a Traitors-style social deduction game during padel sessions. One phone is passed around and each player privately holds to view their secret role and mission.
 
 Everything runs in the browser. There is no backend, database, account or API key — session data lives in the browser's `localStorage` on the phone running the game.
+
+## Rules
+
+- **Faithful** all get the same secret mission (e.g. *win 3 points with a lob*) and must complete it without making it obvious.
+- **Traitors** know who the other Traitors are and get a different secret mission from the same list. They also try to work out the Faithful mission, copy it to blend in, and quietly stop it.
+- Spotting someone working on the "wrong" mission is a clue for both sides.
+
+At the end of the block the group agrees out loud on **one suspect**, then the app reveals both missions and the Traitors.
+
+1. **Traitors win** if they did their mission and the suspect wasn't a Traitor.
+2. Otherwise **Faithful win** if they did their mission or the suspect was a Traitor.
+3. Neither? **Traitors win.**
 
 ## How to play
 
 1. **Setup** — add players (tap a name to edit it, × to remove), choose the number of Traitors, tap **Start Game**.
-2. **Pass the phone** — the named player taps **Reveal My Role**, reads their card, then taps **Hide & Pass Phone**.
-3. **Go play** — once everyone has seen their role.
-4. **Next Game** — new roles and a new mission for the same players. Use **Edit players** to change the line-up first.
+2. **Pass the phone** — the named player presses and holds **Hold to view**; the card shows only while held. They tap **Done — pass to …**. **‹ Back** returns to the previous player if someone forgot.
+3. **Play** — a 15–20 minute block. **Check my role** lets anyone re-read their card.
+4. **End round & reveal**, then **Next Game** for new roles and missions with the same players, or **Edit players** first.
 
 Traitor history is remembered by name, so a player who leaves and is added again later keeps their record.
 
@@ -40,9 +52,9 @@ npm run preview    # serve the production build locally
 
 | Path | Purpose |
 | --- | --- |
-| `src/missions.ts` | Missions and secret Traitor tasks. Add a mission by appending to `MISSIONS` (unique `id`) and adding its task to `TRAITOR_TASKS`. |
+| `src/missions.ts` | The secret missions. Add one by appending to `MISSIONS` with a unique `id`, Faithful text and (smaller-target) Traitor text. |
 | `src/allocation.ts` | Fair Traitor selection (pure, tested). |
-| `src/game.ts` | Session state transitions: players, dealing, reveal/hide, next round. |
+| `src/game.ts` | Session state transitions: players, dealing, passing the phone, reveal, next round. |
 | `src/storage.ts` | Saving, loading and validating the session in `localStorage`. |
 | `src/random.ts` | Unbiased random numbers from `crypto.getRandomValues`. |
 | `src/components/` | Screens and the confirmation dialog. |

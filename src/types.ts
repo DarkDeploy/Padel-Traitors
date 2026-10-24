@@ -5,10 +5,15 @@ export interface Player {
   name: string;
 }
 
+/**
+ * A secret mission. The same pool is used for both sides; Traitors get the
+ * (usually smaller) `traitor` version because there are fewer of them.
+ */
 export interface Mission {
   id: string;
   title: string;
-  description: string;
+  faithful: string;
+  traitor: string;
 }
 
 /** Per-player record used by the fair rotation algorithm. */
@@ -28,20 +33,22 @@ export type TraitorHistory = Record<string, PlayerHistory>;
 
 export interface CurrentRound {
   round: number;
-  missionId: string;
+  faithfulMissionId: string;
+  traitorMissionId: string;
   /** Player ids in the order the phone is passed. */
   order: string[];
   traitorIds: string[];
   /** Index into `order` of the player currently holding the phone. */
   revealIndex: number;
-  /** True while the current player's role card is showing. Never restored after a refresh. */
-  revealing: boolean;
+  /** Whether the current player has looked at their card yet (enables "Done"). */
+  viewed: boolean;
 }
 
-export type Phase = 'setup' | 'dealing' | 'complete';
+/** setup → dealing → playing → revealed → (next round) dealing … */
+export type Phase = 'setup' | 'dealing' | 'playing' | 'revealed';
 
 export interface Session {
-  version: 2;
+  version: 3;
   phase: Phase;
   players: Player[];
   traitorCount: number;
@@ -49,7 +56,7 @@ export interface Session {
   history: TraitorHistory;
   /** Normalised names of the Traitors from the last completed round. */
   previousTraitors: string[];
-  /** Mission from the last completed round. */
-  previousMissionId: string | null;
+  previousFaithfulMissionId: string | null;
+  previousTraitorMissionId: string | null;
   current: CurrentRound | null;
 }

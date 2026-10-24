@@ -316,7 +316,44 @@ input {
 
 .handover {
   position: relative;
-  gap: 16px;
+  justify-content: space-between;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.handover-top {
+  margin-top: 48px;
+}
+
+.handover-name {
+  font-size: clamp(2.6rem, 13vw, 4.2rem);
+  overflow-wrap: anywhere;
+}
+
+.handover-bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 112px;
+  justify-content: flex-end;
+}
+
+.handover-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+}
+
+.progress {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.small {
+  font-size: 0.9rem;
 }
 
 .corner-btn {
@@ -331,75 +368,159 @@ input {
   color: var(--muted);
   font-size: 1.4rem;
   cursor: pointer;
+  z-index: 1;
 }
 
-.handover-name {
-  font-size: clamp(2.8rem, 14vw, 4.4rem);
-  overflow-wrap: anywhere;
-  margin-bottom: 32px;
+/* Hold to view */
+
+.hold-btn {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 0;
+  background: radial-gradient(circle at 50% 40%, #2a2a36, #15151d 70%);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  display: grid;
+  place-items: center;
 }
 
-.progress {
+.hold-btn:disabled {
+  opacity: 0.4;
+}
+
+.hold-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  box-shadow: 0 0 0 10px rgba(242, 240, 235, 0.03);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.hold-btn:disabled .hold-ring {
+  animation: none;
+}
+
+.hold-label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.hold-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: var(--bg);
+  padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.hold-overlay .role-card {
+  width: 100%;
+  max-width: 480px;
+}
+
+.hold-hint {
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-/* Reveal */
-
-.reveal {
-  justify-content: space-between;
-}
+/* Role card */
 
 .role-card {
-  border-radius: 22px;
-  padding: 28px 22px;
+  border-radius: 24px;
+  padding: 26px 22px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  animation: reveal 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  gap: 18px;
+  text-align: left;
+  animation: reveal 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.reveal-faithful .role-card {
-  background: linear-gradient(170deg, #22222c, #15151c);
+.card-faithful {
+  background: linear-gradient(170deg, #23232e, #15151c);
   border: 1px solid #3c3a45;
   box-shadow: 0 20px 60px var(--faithful-glow);
 }
 
-.reveal-traitor .role-card {
-  background: linear-gradient(170deg, #2a1012, #140a0c);
-  border: 1px solid #5c1e22;
+.card-traitor {
+  background: linear-gradient(170deg, #2c1013, #140a0c);
+  border: 1px solid #6a2228;
   box-shadow: 0 20px 60px var(--traitor-glow);
 }
 
-.role-name {
-  font-size: clamp(3.2rem, 16vw, 4.6rem);
+.role-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
 }
 
-.reveal-faithful .role-name {
+.role-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.role-name {
+  font-family: var(--display);
+  font-size: clamp(3rem, 15vw, 4.2rem);
+  line-height: 1;
+}
+
+.card-faithful .role-name {
   color: var(--faithful);
 }
 
-.reveal-traitor .role-name {
+.card-traitor .role-name {
   color: var(--traitor);
+}
+
+.role-sub {
+  color: var(--muted);
+}
+
+.card-traitor .role-sub {
+  color: #ffb3b6;
+  font-weight: 600;
 }
 
 .card-section {
   border-top: 1px solid var(--line);
-  padding-top: 18px;
+  padding-top: 16px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 1.1rem;
 }
 
-.reveal-traitor .card-section {
+.card-traitor .card-section {
   border-color: #4a1a1e;
 }
 
-.card-section h2 {
+.card-section h3 {
+  margin: 0;
   font-family: var(--display);
   font-size: 1.7rem;
   font-weight: 600;
+  line-height: 1.15;
+}
+
+.mission-text {
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .label {
@@ -410,11 +531,11 @@ input {
   color: var(--muted);
 }
 
-.task .label {
+.card-traitor .label {
   color: var(--traitor);
 }
 
-/* Complete */
+/* Playing */
 
 .seal {
   width: 72px;
@@ -427,8 +548,87 @@ input {
   color: var(--faithful);
 }
 
-.screen-center h1 {
-  margin-bottom: 24px;
+.stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* Re-check picker */
+
+.pick-title {
+  margin: 56px 0 8px;
+  text-align: center;
+}
+
+.pick-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Round reveal */
+
+.reveal-round {
+  gap: 14px;
+}
+
+.reveal-round > .label {
+  text-align: center;
+  padding-top: 8px;
+}
+
+.reveal-block {
+  border-radius: 20px;
+  padding: 20px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: rise 0.3s ease-out both;
+}
+
+.reveal-block h2 {
+  font-family: var(--display);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.reveal-traitors {
+  background: linear-gradient(170deg, #2c1013, #140a0c);
+  border-color: #6a2228;
+  animation-delay: 0.15s;
+}
+
+.reveal-traitors h2,
+.reveal-traitors .label {
+  color: var(--traitor);
+}
+
+.rules {
+  padding: 4px 4px 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.rules ol {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+}
+
+.rules li + li {
+  margin-top: 4px;
+}
+
+.rules strong {
+  color: var(--text);
 }
 
 /* Dialog */
@@ -495,10 +695,17 @@ input {
   }
 }
 
+@keyframes pulse {
+  50% {
+    transform: scale(1.04);
+    border-color: #4a4a5a;
+  }
+}
+
 @keyframes reveal {
   from {
     opacity: 0;
-    transform: perspective(800px) rotateX(12deg) translateY(18px) scale(0.97);
+    transform: translateY(10px) scale(0.98);
   }
 }
 

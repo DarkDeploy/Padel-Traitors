@@ -1,0 +1,24 @@
+interface Props {
+  onCheckRole: () => void;
+  onEndRound: () => void;
+}
+
+export default function PlayingScreen({ onCheckRole, onEndRound }: Props) {
+  return (
+    <main className="screen screen-center">
+      <div className="seal" aria-hidden="true">
+        ✓
+      </div>
+      <h1>Everyone's in. Go play.</h1>
+      <p className="muted">Come back when the block is over.</p>
+      <div className="stack">
+        <button className="btn btn-primary btn-large btn-block" onClick={onEndRound}>
+          End round &amp; reveal
+        </button>
+        <button className="btn btn-ghost btn-block" onClick={onCheckRole}>
+          Check my role
+        </button>
+      </div>
+    </main>
+  );
+}

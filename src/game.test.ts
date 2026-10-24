@@ -11,7 +11,7 @@ function withPlayers(names: string[]): Session {
 }
 
 function dealAll(s: Session): Session {
-  while (s.phase === 'dealing') s = game.hideAndPass(game.revealRole(s));
+  while (s.phase === 'dealing') s = game.passPhone(game.markViewed(s));
   return s;
 }
 
@@ -55,15 +55,16 @@ describe('rounds', () => {
     let s = game.startRound(withPlayers(['A', 'B', 'C']), seededRandomInt(2)).session!;
     expect(s.current!.round).toBe(1);
     expect(game.currentPlayer(s)!.name).toBe('A');
-    s = game.revealRole(s);
-    expect(s.current!.revealing).toBe(true);
-    expect(game.revealRole(s)).toBe(s);
-    s = game.hideAndPass(s);
-    expect(s.current!.revealing).toBe(false);
-    expect(game.hideAndPass(s)).toBe(s); // repeated tap does not skip the next player
+    expect(game.passPhone(s)).toBe(s); // can't pass before looking
+    s = game.markViewed(s);
+    expect(s.current!.viewed).toBe(true);
+    expect(game.markViewed(s)).toBe(s);
+    s = game.passPhone(s);
+    expect(s.current!.viewed).toBe(false);
+    expect(game.passPhone(s)).toBe(s); // repeated tap does not skip the next player
     expect(game.currentPlayer(s)!.name).toBe('B');
     s = dealAll(s);
-    expect(s.phase).toBe('complete');
+    expect(s.phase).toBe('playing');
     expect(s.completedRounds).toBe(1);
     const traitorName = s.players.find((p) => p.id === s.current!.traitorIds[0])!.name;
     expect(s.previousTraitors).toEqual([game.normaliseName(traitorName)]);
@@ -72,23 +73,42 @@ describe('rounds', () => {
 
   it('starts the next round with the same players, new mission and preserved history', () => {
     let s = dealAll(game.startRound(withPlayers(['A', 'B', 'C', 'D']), seededRandomInt(3)).session!);
-    const firstMission = s.current!.missionId;
+    const firstMission = s.current!.faithfulMissionId;
     const firstTraitors = s.current!.traitorIds;
+    expect(game.startRound(game.revealRound(s), seededRandomInt(4)).session).toBeDefined();
     s = game.startRound(s, seededRandomInt(4)).session!;
     expect(s.phase).toBe('dealing');
     expect(s.current!.round).toBe(2);
     expect(s.current!.revealIndex).toBe(0);
-    expect(s.current!.missionId).not.toBe(firstMission);
+    expect(s.current!.faithfulMissionId).not.toBe(firstMission);
+    expect(s.current!.traitorMissionId).not.toBe(s.current!.faithfulMissionId);
     expect(s.current!.traitorIds).not.toEqual(firstTraitors);
     expect(s.players).toHaveLength(4);
     s = dealAll(s);
     expect(Object.values(s.history).reduce((n, h) => n + h.timesTraitor, 0)).toBe(2);
   });
 
+  it('lets the phone go back to the previous player', () => {
+    let s = game.startRound(withPlayers(['A', 'B', 'C']), seededRandomInt(8)).session!;
+    expect(game.goBack(s)).toBe(s);
+    s = game.passPhone(game.markViewed(s));
+    s = game.goBack(s);
+    expect(game.currentPlayer(s)!.name).toBe('A');
+    expect(s.current!.viewed).toBe(false);
+  });
+
+  it('reveals only after everyone has their role', () => {
+    let s = game.startRound(withPlayers(['A', 'B', 'C']), seededRandomInt(9)).session!;
+    expect(game.revealRound(s)).toBe(s);
+    s = game.revealRound(dealAll(s));
+    expect(s.phase).toBe('revealed');
+    expect(game.traitorNames(s)).toHaveLength(1);
+  });
+
   it('does not count an abandoned deal towards history', () => {
     const base = withPlayers(['A', 'B', 'C']);
     let s = game.startRound(base, seededRandomInt(5)).session!;
-    s = game.returnToSetup(game.revealRole(s));
+    s = game.returnToSetup(game.markViewed(s));
     expect(s.phase).toBe('setup');
     expect(s.current).toBeNull();
     expect(s.history).toEqual({});
