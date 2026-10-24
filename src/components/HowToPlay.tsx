@@ -27,8 +27,8 @@ export default function HowToPlay({ onClose }: { onClose: () => void }) {
           </li>
         </ol>
         <p className="muted small">
-          One question decides it: did the Traitors get caught? Named as the suspect, or no dare happened, means
-          caught and the Faithful win. Otherwise the Traitors win.
+          <strong>Who wins?</strong> Traitors win only if they pulled off a dare <em>and</em> the suspect isn't a
+          Traitor. Anything else — a Traitor named, or no dare pulled off — and the Faithful win.
         </p>
         <p className="muted small">Everything is saved on this phone only.</p>
         <button className="btn btn-primary btn-block" onClick={onClose}>

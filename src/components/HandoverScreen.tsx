@@ -11,16 +11,13 @@ interface Props {
   card: ReactNode;
   onViewed: () => void;
   onDone: () => void;
-  /** Hands the phone back to the previous player, when there is one. */
-  previousName?: string;
-  onPrevious?: () => void;
   /** Top-left corner action (back to setup, or cancel a re-check). */
   cornerLabel: string;
   onCorner: () => void;
 }
 
 export default function HandoverScreen(props: Props) {
-  const { name, progress, viewed, doneLabel, delayMs, card, onViewed, onDone, previousName, onPrevious } = props;
+  const { name, progress, viewed, doneLabel, delayMs, card, onViewed, onDone } = props;
 
   return (
     <main className="screen screen-center handover">
@@ -45,16 +42,7 @@ export default function HandoverScreen(props: Props) {
         ) : (
           <p className="muted small">Eyes away, everyone else.</p>
         )}
-        <div className="handover-meta">
-          {previousName && onPrevious ? (
-            <button className="btn-text" onClick={onPrevious}>
-              ‹ Back to {previousName}
-            </button>
-          ) : (
-            <span />
-          )}
-          {progress && <span className="progress">{progress}</span>}
-        </div>
+        {progress && <p className="progress center">{progress}</p>}
       </div>
     </main>
   );

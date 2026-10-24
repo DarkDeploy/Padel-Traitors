@@ -161,16 +161,6 @@ describe('dealing', () => {
     expect(a.text).toContain('one is enough');
   });
 
-  it('can go back to the previous player', async () => {
-    const { user } = setup();
-    await startGame(user, ['Ana', 'Ben', 'Cal']);
-    holdAndRead();
-    await user.click(screen.getByRole('button', { name: 'Done — pass to Ben' }));
-    await user.click(screen.getByRole('button', { name: '‹ Back to Ana' }));
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Ana');
-    expect(screen.getByText('1 / 3')).toBeInTheDocument();
-  });
-
   it('ignores holds until the pass delay has passed', async () => {
     const user = userEvent.setup();
     render(<App passDelayMs={10_000} />);
@@ -216,7 +206,7 @@ describe('playing and reveal', () => {
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     expect(screen.getByText(getFaithfulMission(faithfulMissionId)!.text)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: seen.find((s) => s.traitor)!.name })).toBeInTheDocument();
-    expect(screen.getByText('Did the Traitors get caught?')).toBeInTheDocument();
+    expect(screen.getByText('Who won?')).toBeInTheDocument();
     expect(stored().phase).toBe('revealed');
   });
 

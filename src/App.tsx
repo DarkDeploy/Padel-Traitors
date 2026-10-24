@@ -94,8 +94,6 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         card={cardFor(player.id)}
         onViewed={() => update(game.markViewed)}
         onDone={() => update(game.passPhone)}
-        previousName={i > 0 ? nameOf(current.order[i - 1]) : undefined}
-        onPrevious={() => update(game.goBack)}
         cornerLabel="Back to setup"
         onCorner={() => setDialog('abandon')}
       />

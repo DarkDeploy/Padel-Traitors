@@ -11,14 +11,14 @@ Everything runs in the browser. There is no backend, database, account or API ke
 
 At the end of the game the group agrees out loud on **one suspect**, then the app unmasks the Traitors, lets them guess the Faithful mission, and reveals it.
 
-One question decides it: **did the Traitors get caught?** Named as the suspect, or no dare actually happened, counts as caught and the Faithful win. Otherwise the Traitors win.
+**Traitors win** only if both are true: they pulled off one of their dares, and the suspect is not a Traitor. Anything else — a Traitor named, or no dare pulled off — and the **Faithful win**.
 
 The Faithful mission isn't scored: it's camouflage. Traitors spot it and copy it to avoid being caught; a Traitor who doesn't stands out.
 
 ## How to play
 
 1. **Setup** — add players (tap a name to edit it, × to remove), choose the number of Traitors, tap **Start Game**.
-2. **Pass the phone** — the named player presses and holds **Hold to view**; the card shows only while held. They tap **Done — pass to …**. **‹ Back** returns to the previous player if someone forgot.
+2. **Pass the phone** — the named player presses and holds **Hold to view**; the card shows only while held. They tap **Done — pass to …**.
 3. **Play** — a 15–20 minute game. **Check my role** lets anyone re-read their card.
 4. **End round & reveal** — the Traitors, then the Faithful mission, revealed one tap at a time. Then **Next Game** for new roles and missions with the same players, or **Edit players** first.
 

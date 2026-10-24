@@ -105,15 +105,6 @@ describe('rounds', () => {
     }
   });
 
-  it('lets the phone go back to the previous player', () => {
-    let s = game.startRound(withPlayers(['A', 'B', 'C']), seededRandomInt(8)).session!;
-    expect(game.goBack(s)).toBe(s);
-    s = game.passPhone(game.markViewed(s));
-    s = game.goBack(s);
-    expect(game.currentPlayer(s)!.name).toBe('A');
-    expect(s.current!.viewed).toBe(false);
-  });
-
   it('reveals only after everyone has their role', () => {
     let s = game.startRound(withPlayers(['A', 'B', 'C']), seededRandomInt(9)).session!;
     expect(game.revealRound(s)).toBe(s);

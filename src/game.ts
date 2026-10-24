@@ -158,13 +158,6 @@ export function passPhone(session: Session): Session {
   };
 }
 
-/** Hands the phone back to the previous player, e.g. if they forgot their role. */
-export function goBack(session: Session): Session {
-  const { current } = session;
-  if (session.phase !== 'dealing' || !current || current.revealIndex === 0) return session;
-  return { ...session, current: { ...current, revealIndex: current.revealIndex - 1, viewed: false } };
-}
-
 /** Ends the round: the missions and the Traitors are shown to everyone. */
 export function revealRound(session: Session): Session {
   if (session.phase !== 'playing') return session;

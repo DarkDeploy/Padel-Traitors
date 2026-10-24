@@ -72,14 +72,17 @@ export default function RoundRevealScreen(props: Props) {
           </section>
 
           <section className="rules">
-            <p className="label">Did the Traitors get caught?</p>
-            <ol>
-              <li>Named as the suspect — caught.</li>
-              <li>No dare actually happened — counts as caught.</li>
-              <li>
-                Caught? <strong>Faithful win.</strong> Otherwise, <strong>Traitors win.</strong>
-              </li>
-            </ol>
+            <p className="label">Who won?</p>
+            <p>
+              <strong>Traitors win</strong> only if both are true:
+            </p>
+            <ul>
+              <li>they pulled off one of their dares, and</li>
+              <li>the suspect is not a Traitor.</li>
+            </ul>
+            <p>
+              Anything else — a Traitor named, or no dare pulled off — and the <strong>Faithful win</strong>.
+            </p>
           </section>
 
           <div className="stack">
