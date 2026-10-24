@@ -16,16 +16,16 @@ export default function HowToPlay({ onClose }: { onClose: () => void }) {
             <strong>Pass the phone.</strong> Everyone holds to see their secret role and mission.
           </li>
           <li>
-            <strong>Faithful</strong> share one habit to lean into on court — without making it obvious.
+            <strong>Faithful</strong> share one habit to lean into on court. Subtle — the Traitors are watching.
           </li>
           <li>
-            <strong>Traitors</strong> know each other and share one risky dare to pull off unseen.
+            <strong>Traitors</strong> know each other and share one risky dare. Spot the habit, copy it, blend in.
           </li>
           <li>
-            <strong>Play your game</strong>, then agree out loud on one suspect and hit reveal.
+            <strong>Play your game</strong>, agree on one suspect, then reveal.
           </li>
         </ol>
-        <p className="muted small">The win rules are shown at the reveal.</p>
+        <p className="muted small">Traitors win only by pulling off the dare without being the suspect. Otherwise, Faithful win.</p>
         <button className="btn btn-primary btn-block" onClick={onClose}>
           Got it
         </button>

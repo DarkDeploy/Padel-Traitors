@@ -129,7 +129,6 @@ export default function App({ passDelayMs = 600 }: AppProps) {
     screen = (
       <RoundRevealScreen
         round={current.round}
-        playerCount={current.order.length}
         faithfulMissionId={current.faithfulMissionId}
         traitorMissionId={current.traitorMissionId}
         traitors={game.traitorNames(session)}

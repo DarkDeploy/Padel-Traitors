@@ -200,14 +200,14 @@ describe('playing and reveal', () => {
     expect(dialog).toHaveTextContent('agree out loud on one suspect');
     await user.click(within(dialog).getByRole('button', { name: 'Reveal' }));
 
-    // Revealed in stages for suspense.
+    // Revealed in stages: Traitors first, then the Faithful mission.
     expect(screen.getByText('The moment of truth')).toBeInTheDocument();
+    expect(screen.queryByText(new RegExp(getTraitorMission(traitorMissionId)!.text))).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
+    expect(screen.getByText(new RegExp(getTraitorMission(traitorMissionId)!.text))).toBeInTheDocument();
     expect(screen.queryByText(getFaithfulMission(faithfulMissionId)!.text)).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     expect(screen.getByText(getFaithfulMission(faithfulMissionId)!.text)).toBeInTheDocument();
-    expect(screen.queryByText(getTraitorMission(traitorMissionId)!.text)).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
-    expect(screen.getByText(new RegExp(getTraitorMission(traitorMissionId)!.text))).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: seen.find((s) => s.traitor)!.name })).toBeInTheDocument();
     expect(screen.getByText('Who won?')).toBeInTheDocument();
     expect(stored().phase).toBe('revealed');
@@ -220,8 +220,8 @@ describe('playing and reveal', () => {
     const firstMission = stored().current!.faithfulMissionId;
     await user.click(screen.getByRole('button', { name: 'End round & reveal' }));
     await user.click(screen.getByRole('button', { name: 'Reveal' }));
-    await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
+    await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     await user.click(screen.getByRole('button', { name: 'Next Game' }));
     await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Deal' }));
 
@@ -238,8 +238,8 @@ describe('playing and reveal', () => {
     await dealEveryone(user);
     await user.click(screen.getByRole('button', { name: 'End round & reveal' }));
     await user.click(screen.getByRole('button', { name: 'Reveal' }));
-    await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
+    await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     await user.click(screen.getByRole('button', { name: 'Edit players' }));
     await user.click(screen.getByRole('button', { name: 'Reset' }));
     await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Reset' }));
