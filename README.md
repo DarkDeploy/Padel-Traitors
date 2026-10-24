@@ -6,16 +6,18 @@ Everything runs in the browser. There is no backend, database, account or API ke
 
 ## How to play
 
-1. **Setup** — add players, choose the number of Traitors (at least one player must be Faithful), tap **Start Game**.
-2. **Pass the phone** — the app names whose turn it is. That player taps **Reveal My Role**, reads their card, then taps **Hide & Pass Phone**.
-3. **Dealing complete** — once everyone has seen their role, go and play.
-4. **Next Game** — deals new roles and a new mission to the same players. Use **Edit players or Traitors** to change the line-up first; players can be marked as *sitting out* without losing their history.
+1. **Setup** — add players (tap a name to edit it, × to remove), choose the number of Traitors, tap **Start Game**.
+2. **Pass the phone** — the named player taps **Reveal My Role**, reads their card, then taps **Hide & Pass Phone**.
+3. **Go play** — once everyone has seen their role.
+4. **Next Game** — new roles and a new mission for the same players. Use **Edit players** to change the line-up first.
+
+Traitor history is remembered by name, so a player who leaves and is added again later keeps their record.
 
 ### Fair Traitor rotation
 
-Roles are not re-rolled independently each round. Each player has a running *fair share* — every round they play adds `traitors ÷ players` to it. Each round the players furthest below their fair share become Traitors, ties are broken with `crypto.getRandomValues`, and last round's Traitors are only picked again if every alternative is already a full assignment ahead of them (or there aren't enough other players). This keeps counts within one of each other while the line-up is stable, and close to each player's fair share when people join, leave, sit out or the Traitor count changes. Perfect equality isn't always mathematically possible (e.g. 5 players, 1 Traitor, 3 rounds). See `src/allocation.ts`.
+Roles are not re-rolled independently each round. Each player has a running *fair share* — every round they play adds `traitors ÷ players` to it. Each round the players furthest below their fair share become Traitors, ties are broken with `crypto.getRandomValues`, and last round's Traitors are only picked again if every alternative is already a full assignment ahead of them (or there aren't enough other players). This keeps counts within one of each other while the line-up is stable, and close to each player's fair share when people join, leave or the Traitor count changes. Perfect equality isn't always mathematically possible (e.g. 5 players, 1 Traitor, 3 rounds). See `src/allocation.ts`.
 
-A deal only counts towards history once every player has seen their role; abandoning a deal part-way (Back to setup) discards it.
+A deal only counts towards history once every player has seen their role; abandoning a deal part-way (the ← on the handover screen) discards it.
 
 ### Privacy caveat
 
@@ -38,7 +40,7 @@ npm run preview    # serve the production build locally
 
 | Path | Purpose |
 | --- | --- |
-| `src/missions.ts` | Mission content and Traitor orders. Add a mission by appending to `MISSIONS` (unique `id`) and optionally adding orders to `TRAITOR_ORDERS`. |
+| `src/missions.ts` | Missions and secret Traitor tasks. Add a mission by appending to `MISSIONS` (unique `id`) and adding its task to `TRAITOR_TASKS`. |
 | `src/allocation.ts` | Fair Traitor selection (pure, tested). |
 | `src/game.ts` | Session state transitions: players, dealing, reveal/hide, next round. |
 | `src/storage.ts` | Saving, loading and validating the session in `localStorage`. |
