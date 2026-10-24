@@ -7,7 +7,7 @@ Everything runs in the browser. There is no backend, database, account or API ke
 ## Rules
 
 - **Faithful** all get the same secret mission: a habit to lean into while on court (e.g. *serve down the middle*). Subtle enough to pass as normal play, but a watchful Traitor can spot the pattern.
-- **Traitors** know who the other Traitors are and share one risky or silly dare (e.g. *get a point replayed*). One of them pulling it off is enough. A Traitor sitting out watches for the Faithful pattern and tips off their partner.
+- **Traitors** know who the other Traitors are and share a risky or silly dare (e.g. *get a point replayed*). With five or more players they get two — one for the court, one for the sideline — and pulling off either is enough.
 
 At the end of the game the group agrees out loud on **one suspect**, then the app unmasks the Traitors, lets them guess the Faithful mission, and reveals it.
 
@@ -53,7 +53,7 @@ npm run preview    # serve the production build locally
 
 | Path | Purpose |
 | --- | --- |
-| `src/missions.ts` | The secret missions. Add one to `FAITHFUL_MISSIONS` or `TRAITOR_MISSIONS` with a unique `id`, title and text. |
+| `src/missions.ts` | The secret missions. Add one to `FAITHFUL_MISSIONS`, `COURT_DARES` or `SIDE_DARES` with a unique `id`, title and text. |
 | `src/allocation.ts` | Fair Traitor selection (pure, tested). |
 | `src/game.ts` | Session state transitions: players, dealing, passing the phone, reveal, next round. |
 | `src/storage.ts` | Saving, loading and validating the session in `localStorage`. |

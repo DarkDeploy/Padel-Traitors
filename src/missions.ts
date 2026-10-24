@@ -36,37 +36,40 @@ export const FAITHFUL_MISSIONS: Mission[] = [
 ];
 
 /**
- * Traitor missions: one risky moment, doable on court or sitting out. Completing
- * one without being named as the suspect is the Traitors' way to win.
+ * Traitor dares: one risky moment. Pulling off any dealt dare without being
+ * named the suspect is the Traitors' only way to win.
  */
-export const TRAITOR_MISSIONS: Mission[] = [
-  // Sneaky (rules and calls)
-  { id: 'made-up-rule', title: 'Made-Up Rule', text: 'Get the group to play a point under a rule you invented.' },
-  { id: 'wrong-score', title: 'Wrong Score', text: 'Get a wrong score played on without anyone correcting it.' },
-  { id: 'bad-call', title: 'Bad Call', text: 'Get a ball that was in called out, and the point stands.' },
+
+/** Dares that need you to be playing. */
+export const COURT_DARES: Mission[] = [
   { id: 'foot-fault', title: 'Foot Fault', text: 'Get a serve called as a foot fault.' },
   { id: 'wrong-server', title: 'Wrong Server', text: 'Get the wrong player to serve a game.' },
-  // Disruption
   { id: 'wrong-ends', title: 'Wrong Ends', text: 'Get the pairs to change ends at the wrong time.' },
   { id: 'lost-ball', title: 'Lost Ball', text: 'Make a ball go "missing" so play stops to look for it.' },
   { id: 'replay', title: 'Replay', text: 'Get a point replayed.' },
-  { id: 'split-decision', title: 'Split Decision', text: 'Get two partners to disagree about a call.' },
-  { id: 'fake-stop', title: 'Fake Stop', text: 'Get play stopped for a reason you made up.' },
-  // Silly
+  { id: 'bad-call', title: 'Bad Call', text: 'Get a ball that was in called out, and the point stands.' },
+  { id: 'made-up-rule', title: 'Made-Up Rule', text: 'Get a point played under a rule you invented.' },
+  { id: 'split-decision', title: 'Split Decision', text: 'Get your partner to disagree with your call.' },
+  { id: 'racket-whisperer', title: 'Racket Whisperer', text: 'Have a proper conversation with your racket out loud.' },
+  { id: 'victory-dance', title: 'Victory Dance', text: 'Do a celebration dance after a point.' },
+];
+
+/** Dares you can pull off from the sideline (or on court). Only dealt when someone is sitting out. */
+export const SIDE_DARES: Mission[] = [
+  { id: 'wrong-score', title: 'Wrong Score', text: 'Call out a wrong score from the side and have it stick.' },
+  { id: 'fake-stop', title: 'Fake Stop', text: 'Stop play for a reason you made up.' },
   { id: 'commentator', title: 'Commentator', text: "Commentate a whole point out loud like it's on TV." },
-  { id: 'slow-clap', title: 'Slow Clap', text: 'Start a slow clap after a point and get someone to join in.' },
+  { id: 'slow-clap', title: 'Slow Clap', text: 'Start a slow clap and get someone to join in.' },
   { id: 'wrong-vamos', title: 'Wrong Vamos', text: 'Shout "Vamos!" for the team that just lost the point.' },
   { id: 'wrong-name', title: 'Wrong Name', text: 'Call a player by the wrong name without them noticing.' },
-  { id: 'take-a-bow', title: 'Take a Bow', text: 'Get someone to take a bow after a point.' },
+  { id: 'take-a-bow', title: 'Take a Bow', text: 'Get a player to take a bow after a point.' },
   { id: 'sing-along', title: 'Sing-Along', text: 'Sing a line of a song and get someone to join in.' },
-  { id: 'racket-whisperer', title: 'Racket Whisperer', text: 'Have a proper conversation with a racket or ball out loud.' },
   { id: 'look-up', title: 'Look Up', text: "Get the group to look at something that isn't there." },
-  { id: 'victory-dance', title: 'Victory Dance', text: 'Do a celebration dance after someone wins a point.' },
   { id: 'accent', title: 'Accent', text: 'Speak in a fake accent for a whole game without explaining why.' },
 ];
 
 export const getFaithfulMission = (id: string) => FAITHFUL_MISSIONS.find((m) => m.id === id);
-export const getTraitorMission = (id: string) => TRAITOR_MISSIONS.find((m) => m.id === id);
+export const getDare = (id: string) => COURT_DARES.find((m) => m.id === id) ?? SIDE_DARES.find((m) => m.id === id);
 
 /** Random mission, avoiding the previous one when an alternative exists. */
 export function pickMission(

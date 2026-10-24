@@ -30,7 +30,10 @@ export type TraitorHistory = Record<string, PlayerHistory>;
 export interface CurrentRound {
   round: number;
   faithfulMissionId: string;
-  traitorMissionId: string;
+  /** The Traitors' dare to do while playing. */
+  courtDareId: string;
+  /** A second dare doable from the sideline; only dealt when someone sits out (5+ players). Either counts. */
+  sideDareId: string | null;
   /** Player ids in the order the phone is passed. */
   order: string[];
   traitorIds: string[];
@@ -44,7 +47,7 @@ export interface CurrentRound {
 export type Phase = 'setup' | 'dealing' | 'playing' | 'revealed';
 
 export interface Session {
-  version: 4;
+  version: 5;
   phase: Phase;
   players: Player[];
   traitorCount: number;
@@ -53,6 +56,7 @@ export interface Session {
   /** Normalised names of the Traitors from the last completed round. */
   previousTraitors: string[];
   previousFaithfulMissionId: string | null;
-  previousTraitorMissionId: string | null;
+  previousCourtDareId: string | null;
+  previousSideDareId: string | null;
   current: CurrentRound | null;
 }

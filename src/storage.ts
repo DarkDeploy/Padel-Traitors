@@ -1,4 +1,4 @@
-import { getFaithfulMission, getTraitorMission } from './missions';
+import { getDare, getFaithfulMission } from './missions';
 import type { CurrentRound, PlayerHistory, Session } from './types';
 
 export const STORAGE_KEY = 'padel-traitors:session';
@@ -28,7 +28,8 @@ function isCurrentRound(v: unknown, playerIds: Set<string>): v is CurrentRound {
   if (!isObject(v)) return false;
   if (!isCount(v.round) || v.round < 1) return false;
   if (!isString(v.faithfulMissionId) || !getFaithfulMission(v.faithfulMissionId)) return false;
-  if (!isString(v.traitorMissionId) || !getTraitorMission(v.traitorMissionId)) return false;
+  if (!isString(v.courtDareId) || !getDare(v.courtDareId)) return false;
+  if (v.sideDareId !== null && (!isString(v.sideDareId) || !getDare(v.sideDareId))) return false;
   if (!isStringArray(v.order) || !isStringArray(v.traitorIds) || !isCount(v.revealIndex)) return false;
   if (typeof v.viewed !== 'boolean') return false;
   if (new Set(v.order).size !== v.order.length || !v.order.every((id) => playerIds.has(id))) return false;
@@ -40,7 +41,7 @@ function isCurrentRound(v: unknown, playerIds: Set<string>): v is CurrentRound {
 
 /** Validates unknown data as a Session. Returns null for anything malformed or from an older version. */
 export function parseSession(data: unknown): Session | null {
-  if (!isObject(data) || data.version !== 4) return null;
+  if (!isObject(data) || data.version !== 5) return null;
   const { players, history } = data;
   if (!Array.isArray(players)) return null;
   for (const p of players) {
@@ -53,7 +54,7 @@ export function parseSession(data: unknown): Session | null {
   if (!isCount(data.traitorCount) || data.traitorCount < 1 || !isCount(data.completedRounds)) return null;
   if (!isObject(history) || !Object.values(history).every(isHistory)) return null;
   if (!isStringArray(data.previousTraitors)) return null;
-  for (const id of [data.previousFaithfulMissionId, data.previousTraitorMissionId]) {
+  for (const id of [data.previousFaithfulMissionId, data.previousCourtDareId, data.previousSideDareId]) {
     if (id !== null && !isString(id)) return null;
   }
 

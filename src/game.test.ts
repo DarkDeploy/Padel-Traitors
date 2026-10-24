@@ -81,11 +81,28 @@ describe('rounds', () => {
     expect(s.current!.round).toBe(2);
     expect(s.current!.revealIndex).toBe(0);
     expect(s.current!.faithfulMissionId).not.toBe(firstMission);
-    expect(s.current!.traitorMissionId).not.toBe(s.current!.faithfulMissionId);
     expect(s.current!.traitorIds).not.toEqual(firstTraitors);
     expect(s.players).toHaveLength(4);
     s = dealAll(s);
     expect(Object.values(s.history).reduce((n, h) => n + h.timesTraitor, 0)).toBe(2);
+  });
+
+  it('deals a side dare only when someone will be sitting out', () => {
+    const four = game.startRound(withPlayers(['A', 'B', 'C', 'D']), seededRandomInt(10)).session!;
+    expect(four.current!.sideDareId).toBeNull();
+    const five = game.startRound(withPlayers(['A', 'B', 'C', 'D', 'E']), seededRandomInt(11)).session!;
+    expect(five.current!.sideDareId).not.toBeNull();
+    expect(five.current!.sideDareId).not.toBe(five.current!.courtDareId);
+  });
+
+  it('avoids repeating last round\'s dares', () => {
+    let s = dealAll(game.startRound(withPlayers(['A', 'B', 'C', 'D', 'E']), seededRandomInt(12)).session!);
+    const { courtDareId, sideDareId } = s.current!;
+    for (let seed = 0; seed < 20; seed++) {
+      const next = game.startRound(s, seededRandomInt(seed)).session!;
+      expect(next.current!.courtDareId).not.toBe(courtDareId);
+      expect(next.current!.sideDareId).not.toBe(sideDareId);
+    }
   });
 
   it('lets the phone go back to the previous player', () => {

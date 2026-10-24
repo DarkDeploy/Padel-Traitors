@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { getFaithfulMission, getTraitorMission } from '../missions';
+import { getDare, getFaithfulMission } from '../missions';
 
 interface Props {
   round: number;
   faithfulMissionId: string;
-  traitorMissionId: string;
+  courtDareId: string;
+  sideDareId: string | null;
   traitors: string[];
   onNextGame: () => void;
   onEditPlayers: () => void;
@@ -14,7 +15,8 @@ interface Props {
 export default function RoundRevealScreen(props: Props) {
   const [step, setStep] = useState(0);
   const faithful = getFaithfulMission(props.faithfulMissionId);
-  const traitor = getTraitorMission(props.traitorMissionId);
+  const courtDare = getDare(props.courtDareId);
+  const sideDare = props.sideDareId ? getDare(props.sideDareId) : undefined;
   const plural = props.traitors.length > 1;
 
   if (step === 0) {
@@ -40,9 +42,14 @@ export default function RoundRevealScreen(props: Props) {
         <p className="label">The Traitor{plural ? 's were' : ' was'}</p>
         <h2>{props.traitors.join(' & ')}</h2>
         <p className="mission-text">
-          The dare — <strong>{traitor?.title}</strong>: {traitor?.text}
+          <strong>{courtDare?.title}</strong>: {courtDare?.text}
         </p>
-        <p className="muted small">Did they pull it off? Were they the suspect?</p>
+        {sideDare && (
+          <p className="mission-text">
+            <strong>{sideDare.title}</strong>: {sideDare.text}
+          </p>
+        )}
+        <p className="muted small">Did they pull {sideDare ? 'either' : 'it'} off? Were they the suspect?</p>
       </section>
 
       {step === 1 ? (
@@ -68,7 +75,7 @@ export default function RoundRevealScreen(props: Props) {
             <p className="label">Did the Traitors get caught?</p>
             <ol>
               <li>Named as the suspect — caught.</li>
-              <li>Never did the dare — counts as caught.</li>
+              <li>No dare actually happened — counts as caught.</li>
               <li>
                 Caught? <strong>Faithful win.</strong> Otherwise, <strong>Traitors win.</strong>
               </li>

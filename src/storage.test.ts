@@ -24,14 +24,14 @@ describe('storage', () => {
     if (loaded.status !== 'ok') return;
     expect(loaded.session.current!.traitorIds).toEqual(s.current!.traitorIds);
     expect(loaded.session.current!.faithfulMissionId).toBe(s.current!.faithfulMissionId);
-    expect(loaded.session.current!.traitorMissionId).toBe(s.current!.traitorMissionId);
+    expect(loaded.session.current!.courtDareId).toBe(s.current!.courtDareId);
   });
 
   it.each([
     ['not JSON', '{nope'],
     ['null', 'null'],
     ['an array', '[]'],
-    ['an old version', JSON.stringify({ ...game.createSession(), version: 3 })],
+    ['an old version', JSON.stringify({ ...game.createSession(), version: 4 })],
     ['missing players', JSON.stringify({ ...game.createSession(), players: undefined })],
     ['an unknown phase', JSON.stringify({ ...game.createSession(), phase: 'party' })],
   ])('treats %s as corrupt', (_, raw) => {
@@ -43,7 +43,8 @@ describe('storage', () => {
     const s = sampleSession();
     const cur = s.current!;
     expect(parseSession({ ...s, current: { ...cur, faithfulMissionId: 'gone' } })).toBeNull();
-    expect(parseSession({ ...s, current: { ...cur, traitorMissionId: undefined } })).toBeNull();
+    expect(parseSession({ ...s, current: { ...cur, courtDareId: undefined } })).toBeNull();
+    expect(parseSession({ ...s, current: { ...cur, sideDareId: 'nope' } })).toBeNull();
     expect(parseSession({ ...s, current: { ...cur, traitorIds: [] } })).toBeNull();
     expect(parseSession({ ...s, current: { ...cur, order: [...cur.order, 'ghost'] } })).toBeNull();
     expect(parseSession({ ...s, current: { ...cur, revealIndex: 99 } })).toBeNull();

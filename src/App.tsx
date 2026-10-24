@@ -70,7 +70,9 @@ export default function App({ passDelayMs = 600 }: AppProps) {
     return (
       <RoleCard
         role={role}
-        missionId={role === 'traitor' ? current!.traitorMissionId : current!.faithfulMissionId}
+        faithfulMissionId={current!.faithfulMissionId}
+        courtDareId={current!.courtDareId}
+        sideDareId={current!.sideDareId}
         fellowTraitors={role === 'traitor' ? game.traitorNames(session).filter((n) => n !== nameOf(playerId)) : []}
       />
     );
@@ -130,7 +132,8 @@ export default function App({ passDelayMs = 600 }: AppProps) {
       <RoundRevealScreen
         round={current.round}
         faithfulMissionId={current.faithfulMissionId}
-        traitorMissionId={current.traitorMissionId}
+        courtDareId={current.courtDareId}
+        sideDareId={current.sideDareId}
         traitors={game.traitorNames(session)}
         onNextGame={() => setDialog('next')}
         onEditPlayers={() => update(game.returnToSetup)}

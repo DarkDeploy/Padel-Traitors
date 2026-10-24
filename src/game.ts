@@ -1,5 +1,5 @@
 import { recordRound, selectTraitors, validateConfig } from './allocation';
-import { FAITHFUL_MISSIONS, pickMission, TRAITOR_MISSIONS } from './missions';
+import { COURT_DARES, FAITHFUL_MISSIONS, pickMission, SIDE_DARES } from './missions';
 import { createId, cryptoRandomInt, type RandomInt } from './random';
 import type { Player, Role, Session } from './types';
 
@@ -7,7 +7,7 @@ export const MAX_NAME_LENGTH = 24;
 
 export function createSession(): Session {
   return {
-    version: 4,
+    version: 5,
     phase: 'setup',
     players: [],
     traitorCount: 1,
@@ -15,7 +15,8 @@ export function createSession(): Session {
     history: {},
     previousTraitors: [],
     previousFaithfulMissionId: null,
-    previousTraitorMissionId: null,
+    previousCourtDareId: null,
+    previousSideDareId: null,
     current: null,
   };
 }
@@ -97,7 +98,9 @@ export function startRound(session: Session, randomInt: RandomInt = cryptoRandom
   const order = session.players.map((p) => p.id);
   const keyToId = new Map(session.players.map((p) => [normaliseName(p.name), p.id]));
   const faithfulMission = pickMission(FAITHFUL_MISSIONS, session.previousFaithfulMissionId, randomInt);
-  const traitorMission = pickMission(TRAITOR_MISSIONS, session.previousTraitorMissionId, randomInt);
+  const courtDare = pickMission(COURT_DARES, session.previousCourtDareId, randomInt);
+  // Padel is doubles, so with more than four players someone is always sitting out.
+  const sideDare = order.length > 4 ? pickMission(SIDE_DARES, session.previousSideDareId, randomInt) : null;
   const traitorKeys = selectTraitors(
     {
       playerIds: [...keyToId.keys()],
@@ -114,7 +117,8 @@ export function startRound(session: Session, randomInt: RandomInt = cryptoRandom
       current: {
         round: session.completedRounds + 1,
         faithfulMissionId: faithfulMission.id,
-        traitorMissionId: traitorMission.id,
+        courtDareId: courtDare.id,
+        sideDareId: sideDare?.id ?? null,
         order,
         traitorIds: traitorKeys.map((key) => keyToId.get(key)!),
         revealIndex: 0,
@@ -149,7 +153,8 @@ export function passPhone(session: Session): Session {
     history: recordRound(session.history, current.order.map(keyOf), traitors),
     previousTraitors: traitors,
     previousFaithfulMissionId: current.faithfulMissionId,
-    previousTraitorMissionId: current.traitorMissionId,
+    previousCourtDareId: current.courtDareId,
+    previousSideDareId: current.sideDareId ?? session.previousSideDareId,
   };
 }
 

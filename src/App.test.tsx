@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
-import { getFaithfulMission, getTraitorMission } from './missions';
+import { getDare, getFaithfulMission } from './missions';
 import { STORAGE_KEY } from './storage';
 import type { Session } from './types';
 
@@ -125,21 +125,26 @@ describe('dealing', () => {
   it('gives Faithful their mission and Traitors a different one', async () => {
     const { user } = setup();
     await startGame(user, ['Ana', 'Ben', 'Cal', 'Dee', 'Eli', 'Fay']);
-    const { faithfulMissionId, traitorMissionId } = stored().current!;
+    const { faithfulMissionId, courtDareId, sideDareId } = stored().current!;
     const faithful = getFaithfulMission(faithfulMissionId)!;
-    const traitor = getTraitorMission(traitorMissionId)!;
+    const court = getDare(courtDareId)!;
+    const side = getDare(sideDareId!)!;
     const seen = await dealEveryone(user);
 
     const traitors = seen.filter((s) => s.traitor);
     expect(traitors).toHaveLength(1);
     for (const s of seen) {
       if (s.traitor) {
-        expect(s.text).toContain(traitor.text);
+        expect(s.text).toContain('Dare · on court');
+        expect(s.text).toContain(court.text);
+        expect(s.text).toContain('Dare · off court');
+        expect(s.text).toContain(side.text);
         expect(s.text).not.toContain(faithful.title);
         expect(s.text).toContain('You are the only Traitor');
       } else {
         expect(s.text).toContain(faithful.text);
-        expect(s.text).not.toContain(traitor.title);
+        expect(s.text).not.toContain(court.title);
+        expect(s.text).not.toContain(side.title);
       }
     }
   });
@@ -153,7 +158,7 @@ describe('dealing', () => {
     const [a, b] = seen.filter((s) => s.traitor);
     expect(a.text).toContain(`Fellow Traitor: ${b.name}`);
     expect(b.text).toContain(`Fellow Traitor: ${a.name}`);
-    expect(a.text).toContain('one of you pulling it off is enough');
+    expect(a.text).toContain('one is enough');
   });
 
   it('can go back to the previous player', async () => {
@@ -194,7 +199,7 @@ describe('playing and reveal', () => {
     const { user } = setup();
     await startGame(user);
     const seen = await dealEveryone(user);
-    const { faithfulMissionId, traitorMissionId } = stored().current!;
+    const { faithfulMissionId, courtDareId } = stored().current!;
     await user.click(screen.getByRole('button', { name: 'End round & reveal' }));
     const dialog = screen.getByRole('alertdialog');
     expect(dialog).toHaveTextContent('agree out loud on one suspect');
@@ -202,9 +207,11 @@ describe('playing and reveal', () => {
 
     // Revealed in stages: Traitors first, then the Faithful mission.
     expect(screen.getByText('The moment of truth')).toBeInTheDocument();
-    expect(screen.queryByText(new RegExp(getTraitorMission(traitorMissionId)!.text))).not.toBeInTheDocument();
+    expect(screen.queryByText(new RegExp(getDare(courtDareId)!.text))).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
-    expect(screen.getByText(new RegExp(getTraitorMission(traitorMissionId)!.text))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(getDare(courtDareId)!.text))).toBeInTheDocument();
+    // Four players: no side dare dealt.
+    expect(screen.queryByText(/Did they pull either off/)).not.toBeInTheDocument();
     expect(screen.queryByText(getFaithfulMission(faithfulMissionId)!.text)).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     expect(screen.getByText(getFaithfulMission(faithfulMissionId)!.text)).toBeInTheDocument();
@@ -266,12 +273,13 @@ describe('persistence', () => {
     const after = stored();
     expect(after.current!.traitorIds).toEqual(before.current!.traitorIds);
     expect(after.current!.faithfulMissionId).toBe(before.current!.faithfulMissionId);
-    expect(after.current!.traitorMissionId).toBe(before.current!.traitorMissionId);
+    expect(after.current!.courtDareId).toBe(before.current!.courtDareId);
+    expect(after.current!.sideDareId).toBe(before.current!.sideDareId);
   });
 
   it('restores a valid saved setup', () => {
     const session: Session = {
-      version: 4,
+      version: 5,
       phase: 'setup',
       players: [
         { id: 'a', name: 'Ana' },
@@ -282,7 +290,8 @@ describe('persistence', () => {
       history: { ana: { timesTraitor: 2, fairShare: 1.5, roundsPlayed: 3 } },
       previousTraitors: ['ana'],
       previousFaithfulMissionId: 'lob-lover',
-      previousTraitorMissionId: 'commentator',
+      previousCourtDareId: 'replay',
+      previousSideDareId: null,
       current: null,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
@@ -293,7 +302,7 @@ describe('persistence', () => {
   });
 
   it('shows an error screen for malformed saved data and can start fresh', async () => {
-    localStorage.setItem(STORAGE_KEY, '{"version":4,"players":"oops"}');
+    localStorage.setItem(STORAGE_KEY, '{"version":5,"players":"oops"}');
     const { user } = setup();
     expect(screen.getByText("Saved game couldn't be loaded")).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Start fresh' }));

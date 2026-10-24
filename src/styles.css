@@ -433,7 +433,8 @@ input {
   pointer-events: none;
   background: var(--bg);
   animation: fade-in 0.15s ease-out;
-  padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+  overflow: hidden;
+  padding: max(12px, env(safe-area-inset-top)) 16px max(12px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -455,10 +456,10 @@ input {
 
 .role-card {
   border-radius: 24px;
-  padding: 26px 22px;
+  padding: 20px 20px 18px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
   text-align: left;
   animation: reveal 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -484,13 +485,13 @@ input {
 }
 
 .role-icon {
-  font-size: 2.4rem;
+  font-size: 1.9rem;
   line-height: 1;
 }
 
 .role-name {
   font-family: var(--display);
-  font-size: clamp(3rem, 15vw, 4.2rem);
+  font-size: clamp(2.6rem, 12vw, 3.6rem);
   line-height: 1;
 }
 
@@ -513,10 +514,12 @@ input {
 
 .card-section {
   border-top: 1px solid var(--line);
-  padding-top: 16px;
+  padding-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  font-size: 0.98rem;
+  line-height: 1.4;
 }
 
 .card-traitor .card-section {
@@ -526,13 +529,13 @@ input {
 .card-section h3 {
   margin: 0;
   font-family: var(--display);
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   font-weight: 600;
   line-height: 1.15;
 }
 
 .mission-text {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 
