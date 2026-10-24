@@ -1,4 +1,4 @@
-import { getMission } from '../missions';
+import { getFaithfulMission, getTraitorMission } from '../missions';
 
 interface Props {
   round: number;
@@ -10,8 +10,8 @@ interface Props {
 }
 
 export default function RoundRevealScreen(props: Props) {
-  const faithful = getMission(props.faithfulMissionId);
-  const traitor = getMission(props.traitorMissionId);
+  const faithful = getFaithfulMission(props.faithfulMissionId);
+  const traitor = getTraitorMission(props.traitorMissionId);
   const plural = props.traitors.length > 1;
 
   return (
@@ -21,14 +21,14 @@ export default function RoundRevealScreen(props: Props) {
       <section className="reveal-block">
         <p className="label">Faithful mission</p>
         <h2>{faithful?.title}</h2>
-        <p>{faithful?.faithful}</p>
+        <p>{faithful?.text}</p>
       </section>
 
       <section className="reveal-block reveal-traitors">
         <p className="label">The Traitor{plural ? 's were' : ' was'}</p>
         <h2>{props.traitors.join(' & ')}</h2>
         <p>
-          <strong>{traitor?.title}:</strong> {traitor?.traitor}
+          <strong>{traitor?.title}:</strong> {traitor?.text}
         </p>
       </section>
 
@@ -39,7 +39,7 @@ export default function RoundRevealScreen(props: Props) {
             <strong>Traitors win</strong> if they did their mission and the suspect wasn't a Traitor.
           </li>
           <li>
-            Otherwise <strong>Faithful win</strong> if they did their mission or the suspect was a Traitor.
+            Otherwise <strong>Faithful win</strong> if they mostly stuck to their mission or the suspect was a Traitor.
           </li>
           <li>Neither? Traitors win.</li>
         </ol>

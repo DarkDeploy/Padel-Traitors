@@ -1,4 +1,4 @@
-import { getMission } from '../missions';
+import { getFaithfulMission, getTraitorMission } from '../missions';
 import type { Role } from '../types';
 
 interface Props {
@@ -10,8 +10,8 @@ interface Props {
 
 /** Both cards share one layout so a glance from across the court gives nothing away. */
 export default function RoleCard({ role, missionId, fellowTraitors }: Props) {
-  const mission = getMission(missionId);
   const traitor = role === 'traitor';
+  const mission = traitor ? getTraitorMission(missionId) : getFaithfulMission(missionId);
 
   return (
     <article className={`role-card ${traitor ? 'card-traitor' : 'card-faithful'}`}>
@@ -33,16 +33,15 @@ export default function RoleCard({ role, missionId, fellowTraitors }: Props) {
         <section className="card-section">
           <p className="label">Your secret mission</p>
           <h3>{mission.title}</h3>
-          <p className="mission-text">{traitor ? mission.traitor : mission.faithful}</p>
+          <p className="mission-text">{mission.text}</p>
         </section>
       )}
 
       <section className="card-section">
-        <p className="label">{traitor ? 'Also' : 'Remember'}</p>
         <p>
           {traitor
-            ? "Work out the Faithful mission. Copy it to blend in, and quietly stop it if you can. Don't get caught."
-            : "Be subtle — the Traitors are watching. Look out for anyone who isn't doing the mission."}
+            ? 'Do this once without getting caught. Sitting out? It still counts — do it from the side.'
+            : "Lean into this while you're on court. Don't overdo it — the Traitors are watching."}
         </p>
       </section>
     </article>

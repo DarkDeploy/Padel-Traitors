@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
-import { getMission } from './missions';
+import { getFaithfulMission, getTraitorMission } from './missions';
 import { STORAGE_KEY } from './storage';
 import type { Session } from './types';
 
@@ -114,19 +114,19 @@ describe('dealing', () => {
     const { user } = setup();
     await startGame(user, ['Ana', 'Ben', 'Cal', 'Dee', 'Eli', 'Fay']);
     const { faithfulMissionId, traitorMissionId } = stored().current!;
-    const faithful = getMission(faithfulMissionId)!;
-    const traitor = getMission(traitorMissionId)!;
+    const faithful = getFaithfulMission(faithfulMissionId)!;
+    const traitor = getTraitorMission(traitorMissionId)!;
     const seen = await dealEveryone(user);
 
     const traitors = seen.filter((s) => s.traitor);
     expect(traitors).toHaveLength(1);
     for (const s of seen) {
       if (s.traitor) {
-        expect(s.text).toContain(traitor.traitor);
+        expect(s.text).toContain(traitor.text);
         expect(s.text).not.toContain(faithful.title);
         expect(s.text).toContain('You are the only Traitor');
       } else {
-        expect(s.text).toContain(faithful.faithful);
+        expect(s.text).toContain(faithful.text);
         expect(s.text).not.toContain(traitor.title);
       }
     }
@@ -187,8 +187,8 @@ describe('playing and reveal', () => {
     expect(dialog).toHaveTextContent('agree out loud on one suspect');
     await user.click(within(dialog).getByRole('button', { name: 'Reveal' }));
 
-    expect(screen.getByText(getMission(faithfulMissionId)!.faithful)).toBeInTheDocument();
-    expect(screen.getByText(getMission(traitorMissionId)!.traitor)).toBeInTheDocument();
+    expect(screen.getByText(getFaithfulMission(faithfulMissionId)!.text)).toBeInTheDocument();
+    expect(screen.getByText(getTraitorMission(traitorMissionId)!.text)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: seen.find((s) => s.traitor)!.name })).toBeInTheDocument();
     expect(screen.getByText('Who won?')).toBeInTheDocument();
     expect(stored().phase).toBe('revealed');
@@ -248,7 +248,7 @@ describe('persistence', () => {
 
   it('restores a valid saved setup', () => {
     const session: Session = {
-      version: 3,
+      version: 4,
       phase: 'setup',
       players: [
         { id: 'a', name: 'Ana' },
@@ -258,8 +258,8 @@ describe('persistence', () => {
       completedRounds: 3,
       history: { ana: { timesTraitor: 2, fairShare: 1.5, roundsPlayed: 3 } },
       previousTraitors: ['ana'],
-      previousFaithfulMissionId: 'lob-count',
-      previousTraitorMissionId: 'water-break',
+      previousFaithfulMissionId: 'lob-lover',
+      previousTraitorMissionId: 'commentator',
       current: null,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
@@ -270,7 +270,7 @@ describe('persistence', () => {
   });
 
   it('shows an error screen for malformed saved data and can start fresh', async () => {
-    localStorage.setItem(STORAGE_KEY, '{"version":3,"players":"oops"}');
+    localStorage.setItem(STORAGE_KEY, '{"version":4,"players":"oops"}');
     const { user } = setup();
     expect(screen.getByText("Saved game couldn't be loaded")).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Start fresh' }));

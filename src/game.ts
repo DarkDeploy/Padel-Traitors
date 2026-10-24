@@ -1,5 +1,5 @@
 import { recordRound, selectTraitors, validateConfig } from './allocation';
-import { selectMissions } from './missions';
+import { FAITHFUL_MISSIONS, pickMission, TRAITOR_MISSIONS } from './missions';
 import { createId, cryptoRandomInt, type RandomInt } from './random';
 import type { Player, Role, Session } from './types';
 
@@ -7,7 +7,7 @@ export const MAX_NAME_LENGTH = 24;
 
 export function createSession(): Session {
   return {
-    version: 3,
+    version: 4,
     phase: 'setup',
     players: [],
     traitorCount: 1,
@@ -96,12 +96,8 @@ export function startRound(session: Session, randomInt: RandomInt = cryptoRandom
 
   const order = session.players.map((p) => p.id);
   const keyToId = new Map(session.players.map((p) => [normaliseName(p.name), p.id]));
-  const missions = selectMissions(
-    session.previousFaithfulMissionId,
-    session.previousTraitorMissionId,
-    undefined,
-    randomInt,
-  );
+  const faithfulMission = pickMission(FAITHFUL_MISSIONS, session.previousFaithfulMissionId, randomInt);
+  const traitorMission = pickMission(TRAITOR_MISSIONS, session.previousTraitorMissionId, randomInt);
   const traitorKeys = selectTraitors(
     {
       playerIds: [...keyToId.keys()],
@@ -117,8 +113,8 @@ export function startRound(session: Session, randomInt: RandomInt = cryptoRandom
       phase: 'dealing',
       current: {
         round: session.completedRounds + 1,
-        faithfulMissionId: missions.faithful.id,
-        traitorMissionId: missions.traitor.id,
+        faithfulMissionId: faithfulMission.id,
+        traitorMissionId: traitorMission.id,
         order,
         traitorIds: traitorKeys.map((key) => keyToId.get(key)!),
         revealIndex: 0,

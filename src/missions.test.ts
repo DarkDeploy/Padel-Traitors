@@ -1,42 +1,39 @@
-import { MISSIONS, selectMissions } from './missions';
+import { FAITHFUL_MISSIONS, pickMission, TRAITOR_MISSIONS } from './missions';
 import { seededRandomInt } from './test/seeded';
 
 describe('missions', () => {
-  it('have unique ids and text for both sides', () => {
-    expect(new Set(MISSIONS.map((m) => m.id)).size).toBe(MISSIONS.length);
-    expect(MISSIONS.length).toBeGreaterThanOrEqual(20);
-    for (const m of MISSIONS) {
+  it.each([
+    ['Faithful', FAITHFUL_MISSIONS],
+    ['Traitor', TRAITOR_MISSIONS],
+  ])('%s missions have unique ids and text', (_, pool) => {
+    expect(new Set(pool.map((m) => m.id)).size).toBe(pool.length);
+    expect(pool.length).toBeGreaterThanOrEqual(20);
+    for (const m of pool) {
       expect(m.title).toBeTruthy();
-      expect(m.faithful).toBeTruthy();
-      expect(m.traitor).toBeTruthy();
+      expect(m.text).toBeTruthy();
     }
   });
 
-  it('gives each side a different mission and avoids repeats between rounds', () => {
+  it('keeps the two lists separate', () => {
+    const faithfulIds = new Set(FAITHFUL_MISSIONS.map((m) => m.id));
+    expect(TRAITOR_MISSIONS.some((m) => faithfulIds.has(m.id))).toBe(false);
+  });
+
+  it('never repeats the previous mission when alternatives exist', () => {
     const rng = seededRandomInt(42);
-    let prevF: string | null = null;
-    let prevT: string | null = null;
+    let previous: string | null = null;
     const seen = new Set<string>();
     for (let i = 0; i < 300; i++) {
-      const { faithful, traitor } = selectMissions(prevF, prevT, MISSIONS, rng);
-      expect(faithful.id).not.toBe(traitor.id);
-      expect(faithful.id).not.toBe(prevF);
-      expect(traitor.id).not.toBe(prevT);
-      seen.add(faithful.id);
-      prevF = faithful.id;
-      prevT = traitor.id;
+      const mission = pickMission(FAITHFUL_MISSIONS, previous, rng);
+      expect(mission.id).not.toBe(previous);
+      seen.add(mission.id);
+      previous = mission.id;
     }
-    expect(seen.size).toBe(MISSIONS.length);
+    expect(seen.size).toBe(FAITHFUL_MISSIONS.length);
   });
 
-  it('still works with only two missions', () => {
-    const two = MISSIONS.slice(0, 2);
-    const { faithful, traitor } = selectMissions(two[0].id, two[1].id, two);
-    expect(faithful.id).toBe(two[1].id);
-    expect(traitor.id).toBe(two[0].id);
-  });
-
-  it('needs at least two missions', () => {
-    expect(() => selectMissions(null, null, MISSIONS.slice(0, 1))).toThrow();
+  it('reuses the only mission when there is no alternative', () => {
+    const only = [FAITHFUL_MISSIONS[0]];
+    expect(pickMission(only, only[0].id).id).toBe(only[0].id);
   });
 });

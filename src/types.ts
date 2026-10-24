@@ -5,15 +5,11 @@ export interface Player {
   name: string;
 }
 
-/**
- * A secret mission. The same pool is used for both sides; Traitors get the
- * (usually smaller) `traitor` version because there are fewer of them.
- */
+/** A secret mission. Faithful and Traitors draw from separate lists. */
 export interface Mission {
   id: string;
   title: string;
-  faithful: string;
-  traitor: string;
+  text: string;
 }
 
 /** Per-player record used by the fair rotation algorithm. */
@@ -48,7 +44,7 @@ export interface CurrentRound {
 export type Phase = 'setup' | 'dealing' | 'playing' | 'revealed';
 
 export interface Session {
-  version: 3;
+  version: 4;
   phase: Phase;
   players: Player[];
   traitorCount: number;

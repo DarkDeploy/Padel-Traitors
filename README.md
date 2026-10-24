@@ -6,14 +6,13 @@ Everything runs in the browser. There is no backend, database, account or API ke
 
 ## Rules
 
-- **Faithful** all get the same secret mission (e.g. *win 3 points with a lob*) and must complete it without making it obvious.
-- **Traitors** know who the other Traitors are and get a different secret mission from the same list. They also try to work out the Faithful mission, copy it to blend in, and quietly stop it.
-- Spotting someone working on the "wrong" mission is a clue for both sides.
+- **Faithful** all get the same secret mission: a habit to lean into while on court (e.g. *serve down the middle*). Subtle enough to pass as normal play, but a watchful Traitor can spot the pattern.
+- **Traitors** know who the other Traitors are and get a different secret mission: one risky or silly moment (e.g. *get a point replayed*) that works on court or sitting out.
 
 At the end of the block the group agrees out loud on **one suspect**, then the app reveals both missions and the Traitors.
 
 1. **Traitors win** if they did their mission and the suspect wasn't a Traitor.
-2. Otherwise **Faithful win** if they did their mission or the suspect was a Traitor.
+2. Otherwise **Faithful win** if they mostly stuck to their mission or the suspect was a Traitor.
 3. Neither? **Traitors win.**
 
 ## How to play
@@ -52,7 +51,7 @@ npm run preview    # serve the production build locally
 
 | Path | Purpose |
 | --- | --- |
-| `src/missions.ts` | The secret missions. Add one by appending to `MISSIONS` with a unique `id`, Faithful text and (smaller-target) Traitor text. |
+| `src/missions.ts` | The secret missions. Add one to `FAITHFUL_MISSIONS` or `TRAITOR_MISSIONS` with a unique `id`, title and text. |
 | `src/allocation.ts` | Fair Traitor selection (pure, tested). |
 | `src/game.ts` | Session state transitions: players, dealing, passing the phone, reveal, next round. |
 | `src/storage.ts` | Saving, loading and validating the session in `localStorage`. |

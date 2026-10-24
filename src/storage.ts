@@ -1,4 +1,4 @@
-import { getMission } from './missions';
+import { getFaithfulMission, getTraitorMission } from './missions';
 import type { CurrentRound, PlayerHistory, Session } from './types';
 
 export const STORAGE_KEY = 'padel-traitors:session';
@@ -27,8 +27,8 @@ function isHistory(v: unknown): v is PlayerHistory {
 function isCurrentRound(v: unknown, playerIds: Set<string>): v is CurrentRound {
   if (!isObject(v)) return false;
   if (!isCount(v.round) || v.round < 1) return false;
-  if (!isString(v.faithfulMissionId) || !getMission(v.faithfulMissionId)) return false;
-  if (!isString(v.traitorMissionId) || !getMission(v.traitorMissionId)) return false;
+  if (!isString(v.faithfulMissionId) || !getFaithfulMission(v.faithfulMissionId)) return false;
+  if (!isString(v.traitorMissionId) || !getTraitorMission(v.traitorMissionId)) return false;
   if (!isStringArray(v.order) || !isStringArray(v.traitorIds) || !isCount(v.revealIndex)) return false;
   if (typeof v.viewed !== 'boolean') return false;
   if (new Set(v.order).size !== v.order.length || !v.order.every((id) => playerIds.has(id))) return false;
@@ -40,7 +40,7 @@ function isCurrentRound(v: unknown, playerIds: Set<string>): v is CurrentRound {
 
 /** Validates unknown data as a Session. Returns null for anything malformed or from an older version. */
 export function parseSession(data: unknown): Session | null {
-  if (!isObject(data) || data.version !== 3) return null;
+  if (!isObject(data) || data.version !== 4) return null;
   const { players, history } = data;
   if (!Array.isArray(players)) return null;
   for (const p of players) {

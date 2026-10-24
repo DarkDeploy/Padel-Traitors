@@ -31,7 +31,7 @@ describe('storage', () => {
     ['not JSON', '{nope'],
     ['null', 'null'],
     ['an array', '[]'],
-    ['an old version', JSON.stringify({ ...game.createSession(), version: 2 })],
+    ['an old version', JSON.stringify({ ...game.createSession(), version: 3 })],
     ['missing players', JSON.stringify({ ...game.createSession(), players: undefined })],
     ['an unknown phase', JSON.stringify({ ...game.createSession(), phase: 'party' })],
   ])('treats %s as corrupt', (_, raw) => {

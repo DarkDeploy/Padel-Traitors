@@ -2,135 +2,77 @@ import { cryptoRandomInt, type RandomInt } from './random';
 import type { Mission } from './types';
 
 /**
- * Secret missions, designed to be done quietly during a 15–20 minute block.
- * Each round the Faithful get one and the Traitors get a different one, so
- * spotting someone working on the "wrong" mission is a clue.
- * To add a mission, append an entry with a unique id.
+ * Faithful missions: a habit every Faithful leans into while on court. Unusual
+ * enough that a watchful Traitor can spot the pattern, normal enough that one
+ * person doing it means nothing.
  */
-export const MISSIONS: Mission[] = [
-  // Shots
-  { id: 'lob-count', title: 'Lob Count', faithful: 'Win 3 points with a lob.', traitor: 'Win 2 points with a lob.' },
-  {
-    id: 'long-rallies',
-    title: 'Long Rallies',
-    faithful: 'Play 2 rallies of 12 shots or more.',
-    traitor: 'Play a rally of 12 shots or more.',
-  },
-  {
-    id: 'middle-magnet',
-    title: 'Middle Magnet',
-    faithful: 'Win 3 points with a shot down the middle.',
-    traitor: 'Win 2 points with a shot down the middle.',
-  },
-  {
-    id: 'glass-winners',
-    title: 'Glass Winners',
-    faithful: 'Win 3 points with a shot played off the back glass.',
-    traitor: 'Win 2 points with a shot played off the back glass.',
-  },
-  { id: 'volley-kings', title: 'Volley Kings', faithful: 'Win 4 points with a volley.', traitor: 'Win 2 points with a volley.' },
-  { id: 'wide-serves', title: 'Wide Serves', faithful: 'Serve every serve wide.', traitor: 'Serve every serve wide.' },
-  {
-    id: 'three-bounces',
-    title: 'Three Bounces',
-    faithful: 'Bounce the ball exactly 3 times before every serve.',
-    traitor: 'Bounce the ball exactly 3 times before every serve.',
-  },
-  // Score
-  {
-    id: 'deuce-drama',
-    title: 'Deuce Drama',
-    faithful: 'Get 2 games to deuce (40–40).',
-    traitor: 'Get 2 games to deuce (40–40).',
-  },
-  {
-    id: 'neck-and-neck',
-    title: 'Neck and Neck',
-    faithful: 'Finish the block with the games level or one apart.',
-    traitor: 'Finish the block with the games level or one apart.',
-  },
-  {
-    id: 'comeback',
-    title: 'Comeback',
-    faithful: 'See a team win a game from 0–30 down.',
-    traitor: 'See a team win a game from 0–30 down.',
-  },
-  { id: 'love-game', title: 'Love Game', faithful: 'See a team win a game to love.', traitor: 'See a team win a game to love.' },
-  {
-    id: 'last-word',
-    title: 'Last Word',
-    faithful: 'A Faithful hits the winning shot of the final point.',
-    traitor: 'Hit the winning shot of the final point yourself.',
-  },
-  // Social
-  {
-    id: 'ball-duty',
-    title: 'Ball Duty',
-    faithful: 'Each of you hands the balls to the server 3 times.',
-    traitor: 'Hand the balls to the server 4 times.',
-  },
-  {
-    id: 'racket-taps',
-    title: 'Racket Taps',
-    faithful: 'Get 5 racket taps with a partner after winning points.',
-    traitor: 'Get 3 racket taps with your partner after winning points.',
-  },
-  {
-    id: 'score-muddle',
-    title: 'Score Muddle',
-    faithful: 'Get someone to ask "what\'s the score?" 3 times.',
-    traitor: 'Get someone to ask "what\'s the score?" twice.',
-  },
-  {
-    id: 'wrong-score',
-    title: 'Wrong Score',
-    faithful: 'Get a wrong score played on without anyone correcting it.',
-    traitor: 'Get a wrong score played on without anyone correcting it.',
-  },
-  { id: 'play-a-let', title: 'Play a Let', faithful: 'Get 2 points replayed.', traitor: 'Get a point replayed.' },
-  {
-    id: 'water-break',
-    title: 'Water Break',
-    faithful: 'Get the group to stop for a drink before the block ends.',
-    traitor: 'Get the group to stop for a drink before the block ends.',
-  },
-  {
-    id: 'swap-sides',
-    title: 'Swap Sides',
-    faithful: 'Get a pair to swap left and right sides mid-block.',
-    traitor: 'Get a pair to swap left and right sides mid-block.',
-  },
-  {
-    id: 'good-shot',
-    title: 'Good Shot',
-    faithful: 'Get opponents to say "good shot" to you 4 times in total.',
-    traitor: 'Get an opponent to say "good shot" to you twice.',
-  },
+export const FAITHFUL_MISSIONS: Mission[] = [
+  // Play
+  { id: 'middle-serves', title: 'Middle Serves', text: 'Serve down the middle.' },
+  { id: 'line-returns', title: 'Line Returns', text: 'Hit most of your returns down the line.' },
+  { id: 'lob-lover', title: 'Lob Lover', text: 'Lob more than you normally would.' },
+  { id: 'soft-overheads', title: 'Soft Overheads', text: 'Avoid smashing. Go soft on overheads.' },
+  { id: 'stay-back', title: 'Stay Back', text: 'Stay back after serving rather than rushing the net.' },
+  { id: 'glass-lover', title: 'Glass Lover', text: 'Let high balls hit the back glass rather than volleying them.' },
+  { id: 'wide-second-serves', title: 'Wide Second Serves', text: 'Hit your second serves wide.' },
+  // Habits
+  { id: 'three-bounces', title: 'Three Bounces', text: 'Bounce the ball 3 times before you serve.' },
+  { id: 'practice-swing', title: 'Practice Swing', text: 'Do a practice swing before returning serve.' },
+  { id: 'racket-taps', title: 'Racket Taps', text: 'Tap rackets with your partner when you win points.' },
+  { id: 'drink-up', title: 'Drink Up', text: 'Have a sip of water when you change ends.' },
+  { id: 'long-way-round', title: 'Long Way Round', text: 'Walk round the far side of the net post when you change ends.' },
+  { id: 'shoe-check', title: 'Shoe Check', text: 'Tap or retie a shoe when you change ends.' },
+  // Talk
+  { id: 'cheers', title: 'Cheers', text: 'Say "cheers" when someone passes you the balls.' },
+  { id: 'compliments', title: 'Compliments', text: "Compliment your opponents' good shots." },
+  { id: 'iguales', title: 'Iguales', text: 'Call deuce "iguales".' },
+  { id: 'my-bad', title: 'My Bad', text: 'Say "my bad" instead of "sorry".' },
+  { id: 'unlucky', title: 'Unlucky', text: 'Say "unlucky" when someone makes an error.' },
+  { id: 'pep-talk', title: 'Pep Talk', text: 'Encourage your partner when you change ends.' },
+  { id: 'score-flip', title: 'Score Flip', text: "Say the other team's score first." },
 ];
 
-export function getMission(id: string): Mission | undefined {
-  return MISSIONS.find((m) => m.id === id);
-}
-
-function pick(pool: readonly Mission[], avoid: (string | null)[], randomInt: RandomInt): Mission {
-  const preferred = pool.filter((m) => !avoid.includes(m.id));
-  const choices = preferred.length > 0 ? preferred : pool;
-  return choices[randomInt(choices.length)];
-}
-
 /**
- * Picks the Faithful and Traitor missions for a round. They are always different,
- * and each avoids repeating the previous round's mission when alternatives exist.
+ * Traitor missions: one risky moment, doable on court or sitting out. Completing
+ * one without being named as the suspect is the Traitors' way to win.
  */
-export function selectMissions(
-  previousFaithfulId: string | null,
-  previousTraitorId: string | null,
-  missions: readonly Mission[] = MISSIONS,
+export const TRAITOR_MISSIONS: Mission[] = [
+  // Sneaky
+  { id: 'made-up-rule', title: 'Made-Up Rule', text: 'Get the group to play a point under a rule you invented.' },
+  { id: 'wrong-score', title: 'Wrong Score', text: 'Get a wrong score played on without anyone correcting it.' },
+  { id: 'bad-call', title: 'Bad Call', text: 'Get a ball that was in called out, and the point stands.' },
+  { id: 'foot-fault', title: 'Foot Fault', text: 'Get a serve called as a foot fault.' },
+  { id: 'wrong-server', title: 'Wrong Server', text: 'Get the wrong player to serve a game.' },
+  { id: 'wrong-ends', title: 'Wrong Ends', text: 'Get the pairs to change ends at the wrong time.' },
+  { id: 'lost-ball', title: 'Lost Ball', text: 'Make a ball go "missing" so play stops to look for it.' },
+  { id: 'replay', title: 'Replay', text: 'Get a point replayed.' },
+  { id: 'split-decision', title: 'Split Decision', text: 'Get two partners to disagree about a call.' },
+  { id: 'score-row', title: 'Score Row', text: 'Get the group arguing about the score.' },
+  { id: 'fake-stop', title: 'Fake Stop', text: 'Get play stopped for a reason you made up.' },
+  // Silly
+  { id: 'commentator', title: 'Commentator', text: "Commentate a whole point out loud like it's on TV." },
+  { id: 'slow-clap', title: 'Slow Clap', text: 'Start a slow clap after a point and get someone to join in.' },
+  { id: 'wrong-vamos', title: 'Wrong Vamos', text: 'Shout "Vamos!" for the team that just lost the point.' },
+  { id: 'wrong-name', title: 'Wrong Name', text: 'Call a player by the wrong name without them noticing.' },
+  { id: 'take-a-bow', title: 'Take a Bow', text: 'Get someone to take a bow after a point.' },
+  { id: 'sing-along', title: 'Sing-Along', text: 'Sing a line of a song and get someone to join in.' },
+  { id: 'racket-whisperer', title: 'Racket Whisperer', text: 'Have a proper conversation with a racket or ball out loud.' },
+  { id: 'look-up', title: 'Look Up', text: "Get the group to look at something that isn't there." },
+  { id: 'victory-dance', title: 'Victory Dance', text: 'Do a celebration dance after someone wins a point.' },
+  { id: 'hug-it-out', title: 'Hug It Out', text: 'Get a hug from another player.' },
+  { id: 'accent', title: 'Accent', text: 'Speak in a fake accent for a whole game without explaining why.' },
+];
+
+export const getFaithfulMission = (id: string) => FAITHFUL_MISSIONS.find((m) => m.id === id);
+export const getTraitorMission = (id: string) => TRAITOR_MISSIONS.find((m) => m.id === id);
+
+/** Random mission, avoiding the previous one when an alternative exists. */
+export function pickMission(
+  pool: readonly Mission[],
+  previousId: string | null,
   randomInt: RandomInt = cryptoRandomInt,
-): { faithful: Mission; traitor: Mission } {
-  if (missions.length < 2) throw new Error('At least two missions are needed.');
-  const faithful = pick(missions, [previousFaithfulId], randomInt);
-  const rest = missions.filter((m) => m.id !== faithful.id);
-  const traitor = pick(rest, [previousTraitorId], randomInt);
-  return { faithful, traitor };
+): Mission {
+  if (pool.length === 0) throw new Error('No missions configured.');
+  const choices = pool.length > 1 ? pool.filter((m) => m.id !== previousId) : pool;
+  return choices[randomInt(choices.length)];
 }
