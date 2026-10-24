@@ -9,13 +9,13 @@
   --line-strong: rgba(216, 201, 160, 0.2);
   --text: #f1ebdd;
   --muted: #9aa89b;
-  --gold: #d4b36a;
-  --gold-deep: #a8873f;
+  --gold: #b8a271;
+  --gold-soft: rgba(184, 162, 113, 0.5);
   --faithful: #e9dcb8;
   --traitor: #ff5a5f;
   --traitor-deep: #7a1a21;
   --traitor-surface: #1a0d10;
-  --focus: #e3c77e;
+  --focus: #cdbb8a;
   --r: 20px;
   --r-pill: 999px;
   --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -47,7 +47,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   background:
     radial-gradient(ellipse 120% 60% at 50% -20%, var(--bg-glow), transparent 70%),
-    radial-gradient(ellipse 80% 40% at 50% 120%, rgba(212, 179, 106, 0.06), transparent 70%),
+    radial-gradient(ellipse 80% 40% at 50% 120%, rgba(184, 162, 113, 0.04), transparent 70%),
     var(--bg);
   background-attachment: fixed;
 }
@@ -178,13 +178,8 @@ h2 {
 }
 
 .btn-primary {
-  background: linear-gradient(180deg, #e0c27a, var(--gold));
-  color: #16200f;
-  box-shadow: 0 8px 24px rgba(212, 179, 106, 0.18);
-}
-
-.btn-primary:active:not(:disabled) {
-  box-shadow: 0 4px 12px rgba(212, 179, 106, 0.12);
+  background: var(--text);
+  color: #0c1710;
 }
 
 .btn-ghost {
@@ -224,7 +219,7 @@ h2 {
   padding: 0;
   font-size: 1.4rem;
   background: transparent;
-  color: var(--gold);
+  color: var(--text);
 }
 
 .btn-text {
@@ -271,7 +266,7 @@ input {
 }
 
 input:focus {
-  border-color: var(--gold);
+  border-color: var(--gold-soft);
 }
 
 input::placeholder {
@@ -335,7 +330,7 @@ input::placeholder {
   place-items: center;
   background: var(--surface-2);
   border: 1px solid var(--line);
-  color: var(--gold);
+  color: var(--muted);
   font-size: 0.85rem;
   font-weight: 700;
   flex: none;
@@ -469,8 +464,8 @@ input::placeholder {
   border-radius: 50%;
   border: 1px solid var(--line-strong);
   box-shadow:
-    0 0 0 12px rgba(212, 179, 106, 0.04),
-    0 0 0 24px rgba(212, 179, 106, 0.02);
+    0 0 0 12px rgba(241, 235, 221, 0.03),
+    0 0 0 24px rgba(241, 235, 221, 0.015);
   animation: pulse 2.8s ease-in-out infinite;
 }
 
@@ -484,10 +479,10 @@ input::placeholder {
 
 .hold-btn[aria-pressed='true'] .hold-ring {
   animation: none;
-  border-color: var(--gold);
+  border-color: var(--text);
   box-shadow:
-    0 0 0 14px rgba(212, 179, 106, 0.1),
-    0 0 40px rgba(212, 179, 106, 0.2);
+    0 0 0 14px rgba(241, 235, 221, 0.07),
+    0 0 40px rgba(184, 162, 113, 0.18);
 }
 
 .hold-label {
@@ -535,8 +530,8 @@ input::placeholder {
 
 .card-faithful {
   background: linear-gradient(170deg, #142319, var(--surface));
-  border: 1px solid rgba(212, 179, 106, 0.35);
-  box-shadow: 0 24px 60px rgba(212, 179, 106, 0.1);
+  border: 1px solid rgba(184, 162, 113, 0.3);
+  box-shadow: 0 24px 60px rgba(184, 162, 113, 0.08);
 }
 
 .card-traitor {
@@ -814,7 +809,7 @@ input::placeholder {
 @keyframes pulse {
   50% {
     transform: scale(1.03);
-    border-color: rgba(212, 179, 106, 0.5);
+    border-color: rgba(184, 162, 113, 0.45);
   }
 }
 
