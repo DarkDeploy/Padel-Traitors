@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import WinRules from './WinRules';
 
 export default function HowToPlay({ onClose }: { onClose: () => void }) {
   useEffect(() => {
@@ -26,11 +27,7 @@ export default function HowToPlay({ onClose }: { onClose: () => void }) {
             <strong>Play your game</strong>, agree on one suspect, then reveal.
           </li>
         </ol>
-        <p className="muted small">
-          <strong>Who wins?</strong> Traitors win only if they pulled off a dare <em>and</em> the suspect isn't a
-          Traitor. Anything else — a Traitor named, or no dare pulled off — and the Faithful win.
-        </p>
-        <p className="muted small">Everything is saved on this phone only.</p>
+        <WinRules />
         <button className="btn btn-primary btn-block" onClick={onClose}>
           Got it
         </button>

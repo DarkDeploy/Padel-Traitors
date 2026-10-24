@@ -1,19 +1,21 @@
-/* ───────── Tokens ───────── */
+/* ───────── Tokens: deep castle green, candle gold, traitor red ───────── */
 
 :root {
-  --bg: #0b0c11;
-  --surface: #13151c;
-  --surface-2: #1a1d26;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.14);
-  --text: #f3f1ec;
-  --muted: #9b9ba6;
-  --faithful: #ebe5d6;
-  --traitor: #ff4f58;
-  --traitor-deep: #7d1a22;
-  --traitor-surface: #1d0e11;
-  --focus: #8fb4ff;
-  --r-sm: 12px;
+  --bg: #07100c;
+  --bg-glow: #0f2219;
+  --surface: #0e1b15;
+  --surface-2: #15261e;
+  --line: rgba(216, 201, 160, 0.1);
+  --line-strong: rgba(216, 201, 160, 0.2);
+  --text: #f1ebdd;
+  --muted: #9aa89b;
+  --gold: #d4b36a;
+  --gold-deep: #a8873f;
+  --faithful: #e9dcb8;
+  --traitor: #ff5a5f;
+  --traitor-deep: #7a1a21;
+  --traitor-surface: #1a0d10;
+  --focus: #e3c77e;
   --r: 20px;
   --r-pill: 999px;
   --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -43,6 +45,11 @@ body {
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -20%, var(--bg-glow), transparent 70%),
+    radial-gradient(ellipse 80% 40% at 50% 120%, rgba(212, 179, 106, 0.06), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
 }
 
 h1,
@@ -92,7 +99,7 @@ h2 {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--gold);
 }
 
 .error {
@@ -112,7 +119,7 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  animation: enter 0.3s var(--ease) both;
+  animation: enter 0.35s var(--ease) both;
 }
 
 .screen-center {
@@ -154,14 +161,15 @@ h2 {
   color: var(--text);
   background: var(--surface-2);
   transition:
-    transform 0.1s ease,
+    transform 0.12s var(--ease),
     background-color 0.15s ease,
+    box-shadow 0.2s ease,
     opacity 0.15s ease;
   touch-action: manipulation;
 }
 
 .btn:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .btn:disabled {
@@ -170,8 +178,13 @@ h2 {
 }
 
 .btn-primary {
-  background: var(--text);
-  color: var(--bg);
+  background: linear-gradient(180deg, #e0c27a, var(--gold));
+  color: #16200f;
+  box-shadow: 0 8px 24px rgba(212, 179, 106, 0.18);
+}
+
+.btn-primary:active:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(212, 179, 106, 0.12);
 }
 
 .btn-ghost {
@@ -181,8 +194,9 @@ h2 {
 
 .btn-danger,
 .btn-traitor {
-  background: var(--traitor-deep);
+  background: linear-gradient(180deg, #9a2530, var(--traitor-deep));
   color: #fff;
+  box-shadow: 0 8px 24px rgba(255, 90, 95, 0.15);
 }
 
 .btn-large {
@@ -210,6 +224,7 @@ h2 {
   padding: 0;
   font-size: 1.4rem;
   background: transparent;
+  color: var(--gold);
 }
 
 .btn-text {
@@ -252,6 +267,11 @@ input {
   color: var(--text);
   font: inherit;
   font-size: 17px; /* 16px+ stops iOS zooming on focus */
+  transition: border-color 0.15s ease;
+}
+
+input:focus {
+  border-color: var(--gold);
 }
 
 input::placeholder {
@@ -280,6 +300,7 @@ input::placeholder {
   margin: 0;
   padding: 0;
   background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--r);
   overflow: hidden;
 }
@@ -290,6 +311,7 @@ input::placeholder {
   gap: 12px;
   min-height: 56px;
   padding: 0 8px 0 14px;
+  animation: rise 0.3s var(--ease) both;
 }
 
 .player + .player {
@@ -312,7 +334,8 @@ input::placeholder {
   display: grid;
   place-items: center;
   background: var(--surface-2);
-  color: var(--muted);
+  border: 1px solid var(--line);
+  color: var(--gold);
   font-size: 0.85rem;
   font-weight: 700;
   flex: none;
@@ -342,6 +365,7 @@ input::placeholder {
   min-height: 56px;
   padding: 0 6px 0 14px;
   background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--r);
   font-weight: 500;
 }
@@ -394,6 +418,7 @@ input::placeholder {
 .handover-name {
   font-size: clamp(2.6rem, 13vw, 4rem);
   overflow-wrap: anywhere;
+  animation: rise 0.4s var(--ease) both;
 }
 
 .handover-bottom {
@@ -404,7 +429,6 @@ input::placeholder {
   min-height: 112px;
   justify-content: flex-end;
 }
-
 
 .progress {
   color: var(--muted);
@@ -420,7 +444,7 @@ input::placeholder {
   height: 196px;
   border-radius: 50%;
   border: 0;
-  background: var(--surface);
+  background: radial-gradient(circle at 50% 35%, var(--surface-2), var(--surface) 70%);
   color: var(--text);
   font: inherit;
   cursor: pointer;
@@ -430,7 +454,9 @@ input::placeholder {
   -webkit-touch-callout: none;
   display: grid;
   place-items: center;
-  transition: transform 0.15s ease;
+  transition: transform 0.18s var(--ease);
+  animation: rise 0.45s var(--ease) both;
+  animation-delay: 0.08s;
 }
 
 .hold-btn:disabled {
@@ -442,8 +468,10 @@ input::placeholder {
   inset: 0;
   border-radius: 50%;
   border: 1px solid var(--line-strong);
-  box-shadow: 0 0 0 12px rgba(243, 241, 236, 0.03);
-  animation: pulse 2.6s ease-in-out infinite;
+  box-shadow:
+    0 0 0 12px rgba(212, 179, 106, 0.04),
+    0 0 0 24px rgba(212, 179, 106, 0.02);
+  animation: pulse 2.8s ease-in-out infinite;
 }
 
 .hold-btn:disabled .hold-ring {
@@ -451,13 +479,15 @@ input::placeholder {
 }
 
 .hold-btn[aria-pressed='true'] {
-  transform: scale(0.96);
+  transform: scale(0.95);
 }
 
 .hold-btn[aria-pressed='true'] .hold-ring {
   animation: none;
-  border-color: var(--text);
-  box-shadow: 0 0 0 16px rgba(243, 241, 236, 0.06);
+  border-color: var(--gold);
+  box-shadow:
+    0 0 0 14px rgba(212, 179, 106, 0.1),
+    0 0 40px rgba(212, 179, 106, 0.2);
 }
 
 .hold-label {
@@ -500,17 +530,19 @@ input::placeholder {
   flex-direction: column;
   gap: 14px;
   text-align: left;
-  animation: reveal 0.3s var(--ease);
+  animation: reveal 0.35s var(--ease);
 }
 
 .card-faithful {
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
+  background: linear-gradient(170deg, #142319, var(--surface));
+  border: 1px solid rgba(212, 179, 106, 0.35);
+  box-shadow: 0 24px 60px rgba(212, 179, 106, 0.1);
 }
 
 .card-traitor {
-  background: var(--traitor-surface);
-  border: 1px solid rgba(255, 79, 88, 0.35);
+  background: linear-gradient(170deg, #241014, var(--traitor-surface));
+  border: 1px solid rgba(255, 90, 95, 0.4);
+  box-shadow: 0 24px 60px rgba(255, 90, 95, 0.12);
 }
 
 .role-header {
@@ -557,7 +589,7 @@ input::placeholder {
 }
 
 .card-traitor .card-section {
-  border-color: rgba(255, 79, 88, 0.18);
+  border-color: rgba(255, 90, 95, 0.18);
 }
 
 .card-traitor .label {
@@ -578,7 +610,7 @@ input::placeholder {
   color: var(--text);
 }
 
-/* ───────── Playing / picker ───────── */
+/* ───────── Picker ───────── */
 
 .pick-title {
   margin: 56px 0 8px;
@@ -592,6 +624,10 @@ input::placeholder {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.pick-list li {
+  animation: rise 0.3s var(--ease) both;
 }
 
 /* ───────── Reveal ───────── */
@@ -608,13 +644,14 @@ input::placeholder {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  animation: rise 0.3s var(--ease) both;
+  animation: rise 0.4s var(--ease) both;
 }
 
 .reveal-block h2 {
   font-family: var(--display);
   font-size: 1.8rem;
   font-weight: 600;
+  color: var(--faithful);
 }
 
 .reveal-block .mission-text {
@@ -623,8 +660,8 @@ input::placeholder {
 }
 
 .reveal-traitors {
-  background: var(--traitor-surface);
-  border-color: rgba(255, 79, 88, 0.35);
+  background: linear-gradient(170deg, #241014, var(--traitor-surface));
+  border-color: rgba(255, 90, 95, 0.4);
 }
 
 .reveal-traitors h2,
@@ -633,15 +670,14 @@ input::placeholder {
 }
 
 .rules {
-  padding: 4px 4px 0;
-  color: var(--muted);
-  font-size: 0.92rem;
-}
-
-.rules {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding: 4px 4px 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  animation: rise 0.4s var(--ease) both;
+  animation-delay: 0.1s;
 }
 
 .rules ul {
@@ -659,11 +695,13 @@ input::placeholder {
   position: fixed;
   inset: 0;
   z-index: 10;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(3, 8, 5, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  animation: fade-in 0.15s ease-out;
+  animation: fade-in 0.2s ease-out;
 }
 
 .dialog {
@@ -676,7 +714,7 @@ input::placeholder {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  animation: rise 0.25s var(--ease);
+  animation: sheet 0.35s var(--ease);
 }
 
 .dialog::before {
@@ -689,11 +727,16 @@ input::placeholder {
 }
 
 .dialog h2 {
-  font-size: 1.25rem;
+  font-family: var(--display);
+  font-size: 1.4rem;
 }
 
-.dialog p {
+.dialog > p {
   color: var(--muted);
+}
+
+.dialog .rules {
+  padding: 0;
 }
 
 .dialog-actions {
@@ -723,6 +766,7 @@ input::placeholder {
     border-radius: 28px;
     border: 1px solid var(--line-strong);
     padding-top: 22px;
+    animation: reveal 0.3s var(--ease);
   }
   .dialog::before {
     display: none;
@@ -750,7 +794,13 @@ input::placeholder {
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(14px);
+  }
+}
+
+@keyframes sheet {
+  from {
+    transform: translateY(100%);
   }
 }
 
@@ -764,8 +814,25 @@ input::placeholder {
 @keyframes pulse {
   50% {
     transform: scale(1.03);
-    border-color: rgba(255, 255, 255, 0.28);
+    border-color: rgba(212, 179, 106, 0.5);
   }
+}
+
+/* Staggered entrances for lists and reveal blocks. */
+:is(.player, .pick-list li, .reveal-block):nth-child(1) {
+  animation-delay: 0s;
+}
+:is(.player, .pick-list li, .reveal-block):nth-child(2) {
+  animation-delay: 0.05s;
+}
+:is(.player, .pick-list li, .reveal-block):nth-child(3) {
+  animation-delay: 0.1s;
+}
+:is(.player, .pick-list li, .reveal-block):nth-child(4) {
+  animation-delay: 0.15s;
+}
+:is(.player, .pick-list li, .reveal-block):nth-child(n + 5) {
+  animation-delay: 0.2s;
 }
 
 @media (prefers-reduced-motion: reduce) {

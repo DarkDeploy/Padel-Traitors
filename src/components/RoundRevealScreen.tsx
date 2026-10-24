@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getDare, getFaithfulMission } from '../missions';
+import WinRules from './WinRules';
 
 interface Props {
   round: number;
@@ -71,19 +72,7 @@ export default function RoundRevealScreen(props: Props) {
             <p className="mission-text">{faithful?.text}</p>
           </section>
 
-          <section className="rules">
-            <p className="label">Who won?</p>
-            <p>
-              <strong>Traitors win</strong> only if both are true:
-            </p>
-            <ul>
-              <li>they pulled off one of their dares, and</li>
-              <li>the suspect is not a Traitor.</li>
-            </ul>
-            <p>
-              Anything else — a Traitor named, or no dare pulled off — and the <strong>Faithful win</strong>.
-            </p>
-          </section>
+          <WinRules />
 
           <div className="stack">
             <button className="btn btn-primary btn-large btn-block" onClick={props.onNextGame}>
