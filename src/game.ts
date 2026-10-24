@@ -1,0 +1,144 @@
+import { recordRound, selectTraitors, validateConfig } from './allocation';
+import { selectMission } from './missions';
+import { createId, cryptoRandomInt, type RandomInt } from './random';
+import type { Player, Role, Session } from './types';
+
+export const MAX_NAME_LENGTH = 24;
+
+export function createSession(): Session {
+  return {
+    version: 1,
+    phase: 'setup',
+    players: [],
+    traitorCount: 1,
+    completedRounds: 0,
+    history: {},
+    previousTraitorIds: [],
+    previousMissionId: null,
+    current: null,
+  };
+}
+
+export const normaliseName = (name: string) => name.trim().toLocaleLowerCase();
+
+export const activePlayers = (session: Session): Player[] => session.players.filter((p) => p.active);
+
+export type Result = { session: Session; error?: undefined } | { session?: undefined; error: string };
+
+function checkName(session: Session, name: string, ignoreId?: string): string | null {
+  const trimmed = name.trim();
+  if (!trimmed) return 'Enter a name.';
+  if (trimmed.length > MAX_NAME_LENGTH) return `Names can be at most ${MAX_NAME_LENGTH} characters.`;
+  const key = normaliseName(trimmed);
+  if (session.players.some((p) => p.id !== ignoreId && normaliseName(p.name) === key)) {
+    return `${trimmed} is already playing.`;
+  }
+  return null;
+}
+
+const inSetup = (session: Session) => session.phase === 'setup';
+
+export function addPlayer(session: Session, name: string, id: string = createId()): Result {
+  if (!inSetup(session)) return { error: 'Return to setup to change players.' };
+  const error = checkName(session, name);
+  if (error) return { error };
+  return { session: { ...session, players: [...session.players, { id, name: name.trim(), active: true }] } };
+}
+
+export function renamePlayer(session: Session, id: string, name: string): Result {
+  if (!inSetup(session)) return { error: 'Return to setup to change players.' };
+  const error = checkName(session, name, id);
+  if (error) return { error };
+  return {
+    session: { ...session, players: session.players.map((p) => (p.id === id ? { ...p, name: name.trim() } : p)) },
+  };
+}
+
+export function removePlayer(session: Session, id: string): Session {
+  if (!inSetup(session)) return session;
+  return { ...session, players: session.players.filter((p) => p.id !== id) };
+}
+
+export function setPlayerActive(session: Session, id: string, active: boolean): Session {
+  if (!inSetup(session)) return session;
+  return { ...session, players: session.players.map((p) => (p.id === id ? { ...p, active } : p)) };
+}
+
+export function setTraitorCount(session: Session, traitorCount: number): Session {
+  if (!inSetup(session)) return session;
+  return { ...session, traitorCount: Math.max(1, Math.floor(traitorCount)) };
+}
+
+export function configError(session: Session): string | null {
+  return validateConfig(activePlayers(session).length, session.traitorCount);
+}
+
+/** Deals a new round (first game or next game). History is only committed once every role has been seen. */
+export function startRound(session: Session, randomInt: RandomInt = cryptoRandomInt): Result {
+  if (session.phase === 'dealing') return { error: 'Roles are already being dealt.' };
+  const error = configError(session);
+  if (error) return { error };
+
+  const order = activePlayers(session).map((p) => p.id);
+  const mission = selectMission(session.previousMissionId, undefined, randomInt);
+  const traitorIds = selectTraitors(
+    {
+      playerIds: order,
+      traitorCount: session.traitorCount,
+      history: session.history,
+      previousTraitorIds: session.previousTraitorIds,
+    },
+    randomInt,
+  );
+  return {
+    session: {
+      ...session,
+      phase: 'dealing',
+      current: {
+        round: session.completedRounds + 1,
+        missionId: mission.id,
+        order,
+        traitorIds,
+        revealIndex: 0,
+        revealing: false,
+      },
+    },
+  };
+}
+
+export function revealRole(session: Session): Session {
+  const { current } = session;
+  if (session.phase !== 'dealing' || !current || current.revealing) return session;
+  return { ...session, current: { ...current, revealing: true } };
+}
+
+export function hideAndPass(session: Session): Session {
+  const { current } = session;
+  if (session.phase !== 'dealing' || !current || !current.revealing) return session;
+  const revealIndex = current.revealIndex + 1;
+  const next = { ...current, revealing: false, revealIndex };
+  if (revealIndex < current.order.length) return { ...session, current: next };
+  return {
+    ...session,
+    phase: 'complete',
+    current: next,
+    completedRounds: current.round,
+    history: recordRound(session.history, current.order, current.traitorIds),
+    previousTraitorIds: current.traitorIds,
+    previousMissionId: current.missionId,
+  };
+}
+
+/** Back to setup. An unfinished deal is abandoned and does not count towards history. */
+export function returnToSetup(session: Session): Session {
+  return { ...session, phase: 'setup', current: null };
+}
+
+export function currentPlayer(session: Session): Player | undefined {
+  const id = session.current?.order[session.current.revealIndex];
+  return session.players.find((p) => p.id === id);
+}
+
+export function roleOf(session: Session, playerId: string): Role {
+  return session.current?.traitorIds.includes(playerId) ? 'traitor' : 'faithful';
+}
