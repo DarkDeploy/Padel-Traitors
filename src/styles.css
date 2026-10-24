@@ -602,24 +602,20 @@ input {
   gap: 14px;
 }
 
-.reveal-pending {
-  justify-content: center;
-}
-
-.reveal-pending > .label {
-  position: absolute;
-  top: max(24px, env(safe-area-inset-top));
-  left: 0;
-  right: 0;
-}
-
-.reveal-round {
-  position: relative;
+.center {
+  text-align: center;
 }
 
 .reveal-round > .label {
-  text-align: center;
   padding-top: 8px;
+}
+
+.reveal-block .mission-text {
+  font-size: 1.15rem;
+}
+
+.reveal-block .small {
+  margin-top: 6px;
 }
 
 .reveal-block {

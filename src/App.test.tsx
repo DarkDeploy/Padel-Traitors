@@ -149,6 +149,7 @@ describe('dealing', () => {
     const [a, b] = seen.filter((s) => s.traitor);
     expect(a.text).toContain(`Fellow Traitor: ${b.name}`);
     expect(b.text).toContain(`Fellow Traitor: ${a.name}`);
+    expect(a.text).toContain('one of you pulling it off is enough');
   });
 
   it('can go back to the previous player', async () => {
@@ -196,12 +197,13 @@ describe('playing and reveal', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Reveal' }));
 
     // Revealed in stages for suspense.
+    expect(screen.getByText('The moment of truth')).toBeInTheDocument();
     expect(screen.queryByText(getFaithfulMission(faithfulMissionId)!.text)).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     expect(screen.getByText(getFaithfulMission(faithfulMissionId)!.text)).toBeInTheDocument();
     expect(screen.queryByText(getTraitorMission(traitorMissionId)!.text)).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
-    expect(screen.getByText(getTraitorMission(traitorMissionId)!.text)).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(getTraitorMission(traitorMissionId)!.text))).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: seen.find((s) => s.traitor)!.name })).toBeInTheDocument();
     expect(screen.getByText('Who won?')).toBeInTheDocument();
     expect(stored().phase).toBe('revealed');

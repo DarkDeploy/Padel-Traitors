@@ -19,10 +19,10 @@ export default function HowToPlay({ onClose }: { onClose: () => void }) {
             <strong>Faithful</strong> share one habit to lean into on court — without making it obvious.
           </li>
           <li>
-            <strong>Traitors</strong> know each other and each has one risky dare to pull off unseen.
+            <strong>Traitors</strong> know each other and share one risky dare to pull off unseen.
           </li>
           <li>
-            <strong>Play a block</strong>, then agree out loud on one suspect and hit reveal.
+            <strong>Play your game</strong>, then agree out loud on one suspect and hit reveal.
           </li>
         </ol>
         <p className="muted small">

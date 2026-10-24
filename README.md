@@ -7,9 +7,9 @@ Everything runs in the browser. There is no backend, database, account or API ke
 ## Rules
 
 - **Faithful** all get the same secret mission: a habit to lean into while on court (e.g. *serve down the middle*). Subtle enough to pass as normal play, but a watchful Traitor can spot the pattern.
-- **Traitors** know who the other Traitors are and get a different secret mission: one risky or silly moment (e.g. *get a point replayed*) that works on court or sitting out.
+- **Traitors** know who the other Traitors are and share one risky or silly dare (e.g. *get a point replayed*). One of them pulling it off is enough. A Traitor sitting out watches for the Faithful pattern and tips off their partner.
 
-At the end of the block the group agrees out loud on **one suspect**, then the app reveals both missions and the Traitors.
+At the end of the game the group agrees out loud on **one suspect**, then the app reveals both missions and the Traitors.
 
 1. **Traitors win** if they did their mission and the suspect wasn't a Traitor.
 2. Otherwise **Faithful win** if they mostly stuck to their mission or the suspect was a Traitor.
@@ -19,7 +19,7 @@ At the end of the block the group agrees out loud on **one suspect**, then the a
 
 1. **Setup** — add players (tap a name to edit it, × to remove), choose the number of Traitors, tap **Start Game**.
 2. **Pass the phone** — the named player presses and holds **Hold to view**; the card shows only while held. They tap **Done — pass to …**. **‹ Back** returns to the previous player if someone forgot.
-3. **Play** — a 15–20 minute block. **Check my role** lets anyone re-read their card.
+3. **Play** — a 15–20 minute game. **Check my role** lets anyone re-read their card.
 4. **End round & reveal** — the Faithful mission, then the Traitors, revealed one tap at a time. Then **Next Game** for new roles and missions with the same players, or **Edit players** first.
 
 On an iPhone, use Share → **Add to Home Screen** to open it full-screen like an app.

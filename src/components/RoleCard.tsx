@@ -31,7 +31,7 @@ export default function RoleCard({ role, missionId, fellowTraitors }: Props) {
 
       {mission && (
         <section className="card-section">
-          <p className="label">Your secret mission</p>
+          <p className="label">{traitor ? 'Your dare' : 'Your secret mission'}</p>
           <h3>{mission.title}</h3>
           <p className="mission-text">{mission.text}</p>
         </section>
@@ -40,7 +40,9 @@ export default function RoleCard({ role, missionId, fellowTraitors }: Props) {
       <section className="card-section">
         <p>
           {traitor
-            ? 'Do this once without getting caught. Sitting out? It still counts — do it from the side.'
+            ? fellowTraitors.length > 0
+              ? 'Shared with your fellow Traitors — one of you pulling it off is enough. Sitting out? Spot the Faithful pattern and tip them off.'
+              : 'Pull it off without getting caught. It counts from the side of the court too.'
             : "Lean into this while you're on court. Don't overdo it — the Traitors are watching."}
         </p>
       </section>
