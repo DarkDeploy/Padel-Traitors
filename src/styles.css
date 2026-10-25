@@ -721,6 +721,7 @@ input::placeholder {
   flex-direction: column;
   max-height: 50vh;
   overflow-y: auto;
+  touch-action: pan-y;
 }
 
 .history li {
@@ -750,6 +751,7 @@ input::placeholder {
 }
 
 .dialog {
+  touch-action: none;
   width: 100%;
   max-width: 480px;
   background: var(--surface);
@@ -762,18 +764,29 @@ input::placeholder {
   animation: sheet 0.35s var(--ease);
 }
 
-.dialog.settling {
-  transition: transform 0.3s var(--ease);
+.dialog.dragging {
+  transition: none;
 }
 
-/* Drag handle: a generous touch target with a small visible pill. */
+/* iOS-like spring back and slide-out. */
+.dialog.settling {
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.dialog.closing {
+  transition: transform 0.26s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.backdrop.closing {
+  animation: fade-out 0.26s ease-out forwards;
+}
+
 .sheet-handle {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 28px;
   margin: -12px -22px 0;
-  cursor: grab;
   touch-action: none;
 }
 
@@ -858,6 +871,12 @@ input::placeholder {
 
 @keyframes fade-in {
   from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
     opacity: 0;
   }
 }

@@ -35,12 +35,10 @@ export default function HandoverScreen(props: Props) {
       </HoldToView>
 
       <div className="handover-bottom">
-        {viewed ? (
+        {viewed && (
           <button className="btn btn-primary btn-block" onClick={onDone}>
             {doneLabel}
           </button>
-        ) : (
-          <p className="muted small">Only {name} looks at this.</p>
         )}
         {progress && <p className="progress center">{progress}</p>}
       </div>

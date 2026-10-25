@@ -8,21 +8,18 @@ interface Props {
   onClose: () => void;
 }
 
-const DISMISS_DISTANCE = 90;
-
-/**
- * Bottom sheet. Closes on Escape, a tap outside, or dragging it down past a
- * threshold (anything shorter springs back).
- */
+/** iOS-style bottom sheet: dismiss on Escape, tap outside, a long drag or a quick flick. */
 export default function Sheet({ labelledBy, role = 'dialog', className, children, onClose }: Props) {
+  const sheet = useRef<HTMLDivElement>(null);
   const [dragY, setDragY] = useState(0);
-  const [settling, setSettling] = useState(false);
-  const start = useRef<{ y: number; id: number } | null>(null);
+  const [phase, setPhase] = useState<'idle' | 'dragging' | 'settling' | 'closing'>('idle');
+  const drag = useRef<{ id: number; startY: number; lastY: number; lastT: number; velocity: number } | null>(null);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && dismiss();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onClose]);
 
   // Lock the page behind the sheet so it can't scroll (iOS needs position: fixed, not just overflow).
@@ -43,48 +40,70 @@ export default function Sheet({ labelledBy, role = 'dialog', className, children
     };
   }, []);
 
+  /** Slide out, then unmount. */
+  function dismiss() {
+    if (phase === 'closing') return;
+    setPhase('closing');
+    setDragY(sheet.current?.offsetHeight ?? window.innerHeight);
+    window.setTimeout(onClose, 260);
+  }
+
   function onPointerDown(e: React.PointerEvent<HTMLDivElement>) {
-    // Only start a drag from the handle area so buttons and scrolling lists behave normally.
+    if (phase === 'closing') return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    start.current = { y: e.clientY, id: e.pointerId };
-    setSettling(false);
+    const target = e.target as HTMLElement;
+    // Buttons, inputs and scrollable lists keep their own gestures.
+    if (target.closest('button, input, a, .history')) return;
+    drag.current = { id: e.pointerId, startY: e.clientY, lastY: e.clientY, lastT: e.timeStamp, velocity: 0 };
+    setPhase('dragging');
     e.currentTarget.setPointerCapture?.(e.pointerId);
   }
 
   function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
-    if (!start.current || e.pointerId !== start.current.id) return;
-    setDragY(Math.max(0, e.clientY - start.current.y));
+    const d = drag.current;
+    if (!d || e.pointerId !== d.id) return;
+    const dt = Math.max(1, e.timeStamp - d.lastT);
+    d.velocity = (e.clientY - d.lastY) / dt;
+    d.lastY = e.clientY;
+    d.lastT = e.timeStamp;
+    const dy = e.clientY - d.startY;
+    // Follow the finger downwards; resist upwards like iOS rubber-banding.
+    setDragY(dy >= 0 ? dy : dy / 6);
   }
 
   function onPointerUp(e: React.PointerEvent<HTMLDivElement>) {
-    if (!start.current || e.pointerId !== start.current.id) return;
-    const dy = e.clientY - start.current.y;
-    start.current = null;
-    if (dy > DISMISS_DISTANCE) {
-      onClose();
+    const d = drag.current;
+    if (!d || e.pointerId !== d.id) return;
+    drag.current = null;
+    const dy = e.clientY - d.startY;
+    const height = sheet.current?.offsetHeight ?? 400;
+    const flick = d.velocity > 0.5; // px per ms
+    if (dy > height * 0.45 || (flick && dy > 40)) {
+      dismiss();
       return;
     }
-    setSettling(true);
+    setPhase('settling');
     setDragY(0);
   }
 
+  const transform = dragY ? `translateY(${dragY}px)` : undefined;
+
   return (
-    <div className="backdrop" onClick={onClose}>
+    <div className={`backdrop${phase === 'closing' ? ' closing' : ''}`} onClick={dismiss}>
       <div
-        className={`dialog${className ? ` ${className}` : ''}${settling ? ' settling' : ''}`}
+        ref={sheet}
+        className={`dialog ${phase}${className ? ` ${className}` : ''}`}
         role={role}
         aria-modal="true"
         aria-labelledby={labelledBy}
-        style={dragY ? { transform: `translateY(${dragY}px)` } : undefined}
+        style={transform ? { transform } : undefined}
         onClick={(e) => e.stopPropagation()}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
       >
-        <div
-          className="sheet-handle"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-        >
+        <div className="sheet-handle">
           <span aria-hidden="true" />
         </div>
         {children}

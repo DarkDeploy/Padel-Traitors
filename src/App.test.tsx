@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 import { getDare, getFaithfulMission } from './missions';
@@ -71,7 +71,7 @@ describe('setup', () => {
     fireEvent.pointerDown(handle(), { pointerId: 1, clientY: 100 });
     fireEvent.pointerMove(handle(), { pointerId: 1, clientY: 260 });
     fireEvent.pointerUp(handle(), { pointerId: 1, clientY: 260 });
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
   it('locks page scrolling while a sheet is open', async () => {
