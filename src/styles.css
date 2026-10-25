@@ -812,53 +812,6 @@ input::placeholder {
   margin-top: -6px;
 }
 
-.choices {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 4px;
-}
-
-.choice {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: 16px 20px;
-  border-radius: var(--r);
-  border: 1px solid transparent;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: transform 0.12s var(--ease);
-}
-
-.choice:active {
-  transform: scale(0.98);
-}
-
-.choice-faithful {
-  background: var(--text);
-  color: var(--bg);
-}
-
-.choice-traitors {
-  background: var(--accent);
-  color: #2a0a04;
-}
-
-.choice-name {
-  font-family: var(--display);
-  font-size: 1.4rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-}
-
-.choice-hint {
-  font-size: 0.9rem;
-  opacity: 0.75;
-}
 
 .how-list {
   margin: 0;
