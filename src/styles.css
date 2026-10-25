@@ -761,13 +761,26 @@ input::placeholder {
   animation: sheet 0.35s var(--ease);
 }
 
-.dialog::before {
-  content: '';
+.dialog.settling {
+  transition: transform 0.3s var(--ease);
+}
+
+/* Drag handle: a generous touch target with a small visible pill. */
+.sheet-handle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 28px;
+  margin: -12px -22px 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sheet-handle span {
   width: 36px;
   height: 4px;
   border-radius: 2px;
   background: var(--line-strong);
-  margin: 0 auto 6px;
 }
 
 .dialog h2 {
@@ -832,7 +845,7 @@ input::placeholder {
     padding-top: 22px;
     animation: reveal 0.3s var(--ease);
   }
-  .dialog::before {
+  .sheet-handle {
     display: none;
   }
   .screen {

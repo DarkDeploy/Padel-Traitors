@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
+import Sheet from './Sheet';
 
 interface Props {
   title: string;
@@ -11,35 +12,20 @@ interface Props {
 
 export default function ConfirmDialog({ title, confirmLabel, danger, children, onConfirm, onCancel }: Props) {
   const cancelRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    cancelRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onCancel();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onCancel]);
+  useEffect(() => cancelRef.current?.focus(), []);
 
   return (
-    <div className="backdrop" onClick={onCancel}>
-      <div
-        className="dialog"
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-body"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2 id="dialog-title">{title}</h2>
-        <p id="dialog-body">{children}</p>
-        <div className="dialog-actions">
-          <button ref={cancelRef} className="btn btn-ghost" onClick={onCancel}>
-            Cancel
-          </button>
-          <button className={danger ? 'btn btn-danger' : 'btn btn-primary'} onClick={onConfirm}>
-            {confirmLabel}
-          </button>
-        </div>
+    <Sheet role="alertdialog" labelledBy="dialog-title" onClose={onCancel}>
+      <h2 id="dialog-title">{title}</h2>
+      <p id="dialog-body">{children}</p>
+      <div className="dialog-actions">
+        <button ref={cancelRef} className="btn btn-ghost" onClick={onCancel}>
+          Cancel
+        </button>
+        <button className={danger ? 'btn btn-danger' : 'btn btn-primary'} onClick={onConfirm}>
+          {confirmLabel}
+        </button>
       </div>
-    </div>
+    </Sheet>
   );
 }

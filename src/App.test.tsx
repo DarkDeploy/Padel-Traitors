@@ -60,6 +60,28 @@ describe('setup', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('dismisses a sheet by dragging the handle down, but not a short drag', async () => {
+    const { user, container } = setup();
+    await user.click(screen.getByRole('button', { name: 'How it works' }));
+    const handle = () => container.querySelector('.sheet-handle')!;
+    fireEvent.pointerDown(handle(), { pointerId: 1, clientY: 100 });
+    fireEvent.pointerMove(handle(), { pointerId: 1, clientY: 140 });
+    fireEvent.pointerUp(handle(), { pointerId: 1, clientY: 140 });
+    expect(screen.getByRole('dialog', { name: 'How it works' })).toBeInTheDocument();
+    fireEvent.pointerDown(handle(), { pointerId: 1, clientY: 100 });
+    fireEvent.pointerMove(handle(), { pointerId: 1, clientY: 260 });
+    fireEvent.pointerUp(handle(), { pointerId: 1, clientY: 260 });
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('locks page scrolling while a sheet is open', async () => {
+    const { user } = setup();
+    await user.click(screen.getByRole('button', { name: 'How it works' }));
+    expect(document.body.style.position).toBe('fixed');
+    await user.click(screen.getByRole('button', { name: 'Got it' }));
+    expect(document.body.style.position).toBe('');
+  });
+
   it('requires two players and blocks duplicate names', async () => {
     const { user } = setup();
     const start = screen.getByRole('button', { name: 'Start Game' });
