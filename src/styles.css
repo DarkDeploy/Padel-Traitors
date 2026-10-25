@@ -19,6 +19,7 @@
   --focus: var(--accent);
   --r: 20px;
   --r-pill: 999px;
+  --control: 56px;
   --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -156,8 +157,9 @@ h2 {
   border-radius: var(--r-pill);
   font: inherit;
   font-weight: 600;
-  min-height: 50px;
-  padding: 0 20px;
+  font-size: 1.05rem;
+  min-height: var(--control);
+  padding: 0 22px;
   cursor: pointer;
   color: var(--text);
   background: var(--surface-2);
@@ -192,11 +194,6 @@ h2 {
 .btn-traitor {
   background: var(--accent);
   color: #2a0a04;
-}
-
-.btn-large {
-  min-height: 58px;
-  font-size: 1.1rem;
 }
 
 .btn-block {
@@ -259,7 +256,7 @@ input:focus-visible {
 input {
   flex: 1;
   min-width: 0;
-  min-height: 50px;
+  min-height: var(--control);
   padding: 0 18px;
   border-radius: var(--r-pill);
   border: 1px solid var(--line-strong);
@@ -311,7 +308,7 @@ input::placeholder {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 56px;
+  min-height: var(--control);
   padding: 0 8px 0 14px;
   animation: rise 0.3s var(--ease) both;
 }
@@ -364,7 +361,7 @@ input::placeholder {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 56px;
+  min-height: var(--control);
   padding: 0 6px 0 14px;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -512,7 +509,6 @@ input::placeholder {
   justify-content: center;
   align-items: center;
   gap: 14px;
-  animation: fade-in 0.15s ease-out;
 }
 
 .hold-overlay .role-card {

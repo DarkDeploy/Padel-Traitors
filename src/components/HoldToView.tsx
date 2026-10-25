@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 interface Props {
   /** The secret content, shown only while the button is held down. */
   children: ReactNode;
-  /** Called the first time the card is shown. */
+  /** Called the first time the card has been shown and put away. */
   onViewed: () => void;
   /** Delay before holding works, so a stray tap from the previous player can't flash the card. */
   delayMs: number;
@@ -25,10 +25,13 @@ export default function HoldToView({ children, onViewed, delayMs }: Props) {
   // browser never cancels the touch.
   useEffect(() => {
     if (!holding) return;
-    const release = (e: PointerEvent) => {
-      if (pointerId.current === null || e.pointerId === pointerId.current) setHolding(false);
+    const hide = () => {
+      setHolding(false);
+      onViewed();
     };
-    const hide = () => setHolding(false);
+    const release = (e: PointerEvent) => {
+      if (pointerId.current === null || e.pointerId === pointerId.current) hide();
+    };
     const block = (e: TouchEvent) => e.preventDefault();
     window.addEventListener('pointerup', release);
     window.addEventListener('pointercancel', release);
@@ -42,14 +45,13 @@ export default function HoldToView({ children, onViewed, delayMs }: Props) {
       document.removeEventListener('visibilitychange', hide);
       document.removeEventListener('touchmove', block);
     };
-  }, [holding]);
+  }, [holding, onViewed]);
 
   function start(id: number | null) {
     if (!ready) return;
     pointerId.current = id;
     setHolding(true);
     navigator.vibrate?.(15);
-    onViewed();
   }
 
   return (
@@ -68,7 +70,12 @@ export default function HoldToView({ children, onViewed, delayMs }: Props) {
             start(null);
           }
         }}
-        onKeyUp={() => setHolding(false)}
+        onKeyUp={() => {
+          if (holding) {
+            setHolding(false);
+            onViewed();
+          }
+        }}
         onContextMenu={(e) => e.preventDefault()}
       >
         <span className="hold-ring" aria-hidden="true" />

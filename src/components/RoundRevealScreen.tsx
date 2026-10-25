@@ -27,7 +27,7 @@ export default function RoundRevealScreen(props: Props) {
         <h1>The moment of truth</h1>
         <p className="muted">Everyone agreed on one suspect? Point at them.</p>
         <div className="stack">
-          <button className="btn btn-traitor btn-large btn-block" onClick={() => setStep(1)}>
+          <button className="btn btn-traitor btn-block" onClick={() => setStep(1)}>
             Reveal the Traitor{plural ? 's' : ''}
           </button>
         </div>
@@ -60,7 +60,7 @@ export default function RoundRevealScreen(props: Props) {
             <br />
             Guess out loud.
           </p>
-          <button className="btn btn-primary btn-large btn-block" onClick={() => setStep(2)}>
+          <button className="btn btn-primary btn-block" onClick={() => setStep(2)}>
             Reveal the Faithful mission
           </button>
         </div>
@@ -75,7 +75,7 @@ export default function RoundRevealScreen(props: Props) {
           <WinRules />
 
           <div className="stack">
-            <button className="btn btn-primary btn-large btn-block" onClick={props.onNextGame}>
+            <button className="btn btn-primary btn-block" onClick={props.onNextGame}>
               Next Game
             </button>
             <button className="btn-text" onClick={props.onEditPlayers}>

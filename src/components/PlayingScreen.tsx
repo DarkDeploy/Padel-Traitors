@@ -11,7 +11,7 @@ export default function PlayingScreen({ round, onCheckRole, onEndRound }: Props)
       <h1>Everyone's in. Go play.</h1>
       <p className="muted">Come back after the game and pick a suspect.</p>
       <div className="stack">
-        <button className="btn btn-primary btn-large btn-block" onClick={onEndRound}>
+        <button className="btn btn-primary btn-block" onClick={onEndRound}>
           End round &amp; reveal
         </button>
         <button className="btn btn-ghost btn-block" onClick={onCheckRole}>

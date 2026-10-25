@@ -99,7 +99,7 @@ export default function SetupScreen(props: Props) {
           </p>
         )}
         <button
-          className="btn btn-primary btn-large btn-block"
+          className="btn btn-primary btn-block"
           disabled={problem !== null}
           onClick={() => setError(onStart())}
         >
