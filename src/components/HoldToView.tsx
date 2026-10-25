@@ -85,7 +85,6 @@ export default function HoldToView({ children, onViewed, delayMs }: Props) {
       {holding && (
         <div className="hold-overlay" role="dialog" aria-label="Your role">
           {children}
-          <p className="hold-hint">Let go to hide</p>
         </div>
       )}
     </>

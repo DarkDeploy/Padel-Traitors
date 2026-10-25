@@ -517,10 +517,6 @@ input::placeholder {
   max-width: 460px;
 }
 
-.hold-hint {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
 
 /* ───────── Role card ───────── */
 
