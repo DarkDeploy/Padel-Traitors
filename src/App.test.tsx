@@ -212,8 +212,8 @@ describe('playing and reveal', () => {
 
     // Who won is asked when the host starts the next game.
     await user.click(screen.getByRole('button', { name: 'Next Game' }));
-    const sheet = screen.getByRole('dialog', { name: 'Who won round 1?' });
-    await user.click(within(sheet).getByRole('button', { name: 'Traitors' }));
+    const sheet = screen.getByRole('dialog', { name: 'Who won?' });
+    await user.click(within(sheet).getByRole('button', { name: /^Traitors/ }));
     expect(stored().rounds[0].winner).toBe('traitors');
     expect(stored().phase).toBe('dealing');
   });
@@ -228,7 +228,7 @@ describe('playing and reveal', () => {
     await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     await user.click(screen.getByRole('button', { name: 'Next Game' }));
-    await user.click(screen.getByRole('button', { name: 'Faithful' }));
+    await user.click(screen.getByRole('button', { name: /^Faithful/ }));
 
     expect(screen.getByText('1 / 4')).toBeInTheDocument();
     expect(stored().rounds[0].winner).toBe('faithful');

@@ -25,18 +25,20 @@ export default function WhoWonSheet({ round, onPick, onCancel }: Props) {
         aria-labelledby="whowon-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="whowon-title">Who won round {round}?</h2>
-        <p>Then new roles and missions are dealt.</p>
-        <div className="dialog-actions">
-          <button className="btn btn-primary" onClick={() => onPick('faithful')}>
-            Faithful
+        <p className="label">Round {round}</p>
+        <h2 id="whowon-title">Who won?</h2>
+        <div className="choices">
+          <button className="choice choice-faithful" onClick={() => onPick('faithful')}>
+            <span className="choice-name">Faithful</span>
+            <span className="choice-hint">Caught a Traitor, or no dare was pulled off</span>
           </button>
-          <button className="btn btn-traitor" onClick={() => onPick('traitors')}>
-            Traitors
+          <button className="choice choice-traitors" onClick={() => onPick('traitors')}>
+            <span className="choice-name">Traitors</span>
+            <span className="choice-hint">Pulled off a dare and weren't the suspect</span>
           </button>
         </div>
         <button className="btn-text center" onClick={() => onPick(null)}>
-          Skip — just deal
+          Skip
         </button>
       </div>
     </div>
