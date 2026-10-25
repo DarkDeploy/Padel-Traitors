@@ -212,7 +212,7 @@ describe('playing and reveal', () => {
 
     // Host records the result; the session score follows.
     await user.click(screen.getByRole('button', { name: 'Traitors won' }));
-    expect(screen.getByText('Session: Faithful 0 – 1 Traitors')).toBeInTheDocument();
+    expect(screen.getByText('Faithful 0 – 1 Traitors')).toBeInTheDocument();
     expect(stored().rounds[0].winner).toBe('traitors');
     await user.click(screen.getByRole('button', { name: 'Traitors won' }));
     expect(stored().rounds[0].winner).toBeNull();
@@ -236,13 +236,16 @@ describe('playing and reveal', () => {
     expect(second.find((s) => s.traitor)!.name).not.toBe(first.find((s) => s.traitor)!.name);
     expect(stored().completedRounds).toBe(2);
 
-    // Earlier rounds show at the next reveal.
+    // Earlier rounds are listed in the History sheet on setup.
     await user.click(screen.getByRole('button', { name: 'End round & reveal' }));
     await user.click(screen.getByRole('button', { name: 'Reveal' }));
     await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
-    expect(screen.getByText('Earlier rounds')).toBeInTheDocument();
-    expect(screen.getByText(getFaithfulMission(firstMission)!.title)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Edit players' }));
+    await user.click(screen.getByRole('button', { name: 'History' }));
+    const sheet = screen.getByRole('dialog', { name: 'History' });
+    expect(within(sheet).getByText('Round 1')).toBeInTheDocument();
+    expect(within(sheet).getByText(getFaithfulMission(firstMission)!.title)).toBeInTheDocument();
   });
 
   it('resets the session after confirmation', async () => {

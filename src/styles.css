@@ -709,12 +709,6 @@ input::placeholder {
   color: var(--text);
 }
 
-.winner {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .segmented {
   display: flex;
   padding: 4px;
@@ -726,7 +720,7 @@ input::placeholder {
 
 .segmented button {
   flex: 1;
-  min-height: 48px;
+  min-height: calc(var(--control) - 8px);
   border: 0;
   border-radius: var(--r-pill);
   background: transparent;
@@ -744,47 +738,29 @@ input::placeholder {
   color: var(--bg);
 }
 
-.history {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 0 4px;
+.score-line {
+  margin-top: -6px;
 }
 
-.history ul {
+.history {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 0.92rem;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .history li {
-  display: grid;
-  grid-template-columns: 1.5ch 1fr auto 10px;
-  gap: 10px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 0;
 }
 
-.history-traitors {
-  color: var(--accent);
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--line-strong);
-}
-
-.dot.faithful {
-  background: var(--text);
-}
-
-.dot.traitors {
-  background: var(--accent);
+.history li + li {
+  border-top: 1px solid var(--line);
 }
 
 /* ───────── Sheets & dialogs ───────── */

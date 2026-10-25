@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import HistorySheet from './HistorySheet';
 import HowToPlay from './HowToPlay';
 import { configError, MAX_NAME_LENGTH } from '../game';
 import type { Player, Session } from '../types';
@@ -20,6 +21,7 @@ export default function SetupScreen(props: Props) {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   const count = session.players.length;
   const maxTraitors = Math.max(1, count - 1);
@@ -118,12 +120,21 @@ export default function SetupScreen(props: Props) {
         <button className="btn-text" onClick={() => setShowHelp(true)}>
           How it works
         </button>
+        {session.rounds.length > 0 && (
+          <>
+            {' · '}
+            <button className="btn-text" onClick={() => setShowHistory(true)}>
+              History
+            </button>
+          </>
+        )}
         {' · '}
         <button className="btn-text" onClick={onReset}>
           Reset
         </button>
       </footer>
       {showHelp && <HowToPlay onClose={() => setShowHelp(false)} />}
+      {showHistory && <HistorySheet rounds={session.rounds} onClose={() => setShowHistory(false)} />}
     </main>
   );
 }

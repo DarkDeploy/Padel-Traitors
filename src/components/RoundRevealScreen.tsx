@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { getDare, getFaithfulMission } from '../missions';
-import type { RoundRecord, Winner } from '../types';
+import type { Winner } from '../types';
 import WinRules from './WinRules';
 
 interface Props {
@@ -14,7 +14,6 @@ interface Props {
   winner: Winner | null;
   onWinner: (winner: Winner | null) => void;
   scores: { faithful: number; traitors: number };
-  previousRounds: RoundRecord[];
   onNextGame: () => void;
   onEditPlayers: () => void;
 }
@@ -89,39 +88,21 @@ export default function RoundRevealScreen(props: Props) {
 
           <WinRules />
 
-          <section className="winner" aria-label="Who won">
-            <div className="segmented" role="group">
-              {(['faithful', 'traitors'] as const).map((w) => (
-                <button
-                  key={w}
-                  className={props.winner === w ? 'on' : ''}
-                  aria-pressed={props.winner === w}
-                  onClick={() => props.onWinner(props.winner === w ? null : w)}
-                >
-                  {w === 'faithful' ? 'Faithful won' : 'Traitors won'}
-                </button>
-              ))}
-            </div>
-            <p className="muted small center">
-              Session: Faithful {props.scores.faithful} – {props.scores.traitors} Traitors
-            </p>
-          </section>
-
-          {props.previousRounds.length > 0 && (
-            <section className="history">
-              <p className="label">Earlier rounds</p>
-              <ul>
-                {[...props.previousRounds].reverse().slice(0, 5).map((r) => (
-                  <li key={r.round}>
-                    <span className="muted">{r.round}</span>
-                    <span>{getFaithfulMission(r.faithfulMissionId)?.title}</span>
-                    <span className="history-traitors">{r.traitors.join(' & ')}</span>
-                    <span className={`dot ${r.winner ?? ''}`} aria-label={r.winner ?? 'undecided'} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
+          <div className="segmented" role="group" aria-label="Who won">
+            {(['faithful', 'traitors'] as const).map((w) => (
+              <button
+                key={w}
+                className={props.winner === w ? 'on' : ''}
+                aria-pressed={props.winner === w}
+                onClick={() => props.onWinner(props.winner === w ? null : w)}
+              >
+                {w === 'faithful' ? 'Faithful won' : 'Traitors won'}
+              </button>
+            ))}
+          </div>
+          <p className="muted small center score-line">
+            Faithful {props.scores.faithful} – {props.scores.traitors} Traitors
+          </p>
 
           <div className="stack">
             <button className="btn btn-primary btn-block" onClick={props.onNextGame}>

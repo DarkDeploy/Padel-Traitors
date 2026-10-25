@@ -140,7 +140,6 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         winner={session.rounds.find((r) => r.round === current.round)?.winner ?? null}
         onWinner={(w) => update((s) => game.setWinner(s, w))}
         scores={game.scores(session)}
-        previousRounds={session.rounds.filter((r) => r.round !== current.round)}
         onNextGame={() => setDialog('next')}
         onEditPlayers={() => update(game.returnToSetup)}
       />
