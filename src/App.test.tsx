@@ -210,12 +210,12 @@ describe('playing and reveal', () => {
     expect(screen.getByText('Who won?')).toBeInTheDocument();
     expect(stored().phase).toBe('revealed');
 
-    // Host records the result; the session score follows.
-    await user.click(screen.getByRole('button', { name: 'Traitors won' }));
-    expect(screen.getByRole('button', { name: 'Traitors won' })).toHaveAttribute('aria-pressed', 'true');
+    // Who won is asked when the host starts the next game.
+    await user.click(screen.getByRole('button', { name: 'Next Game' }));
+    const sheet = screen.getByRole('dialog', { name: 'Who won round 1?' });
+    await user.click(within(sheet).getByRole('button', { name: 'Traitors' }));
     expect(stored().rounds[0].winner).toBe('traitors');
-    await user.click(screen.getByRole('button', { name: 'Traitors won' }));
-    expect(stored().rounds[0].winner).toBeNull();
+    expect(stored().phase).toBe('dealing');
   });
 
   it('starts the next round after confirmation, keeping players', async () => {
@@ -228,9 +228,10 @@ describe('playing and reveal', () => {
     await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     await user.click(screen.getByRole('button', { name: 'Next Game' }));
-    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Deal' }));
+    await user.click(screen.getByRole('button', { name: 'Faithful' }));
 
     expect(screen.getByText('1 / 4')).toBeInTheDocument();
+    expect(stored().rounds[0].winner).toBe('faithful');
     expect(stored().current!.faithfulMissionId).not.toBe(firstMission);
     const second = await dealEveryone(user);
     expect(second.find((s) => s.traitor)!.name).not.toBe(first.find((s) => s.traitor)!.name);
@@ -242,9 +243,9 @@ describe('playing and reveal', () => {
     await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
     await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
     await user.click(screen.getByRole('button', { name: 'Edit players' }));
-    await user.click(screen.getByRole('button', { name: 'History' }));
-    const sheet = screen.getByRole('dialog', { name: 'History' });
-    expect(within(sheet).getByLabelText('Session score')).toHaveTextContent('Faithful 0 – 0 Traitors');
+    await user.click(screen.getByRole('button', { name: 'Scores' }));
+    const sheet = screen.getByRole('dialog', { name: 'Scores' });
+    expect(within(sheet).getByLabelText('Session score')).toHaveTextContent('Faithful 1 – 0 Traitors');
     expect(within(sheet).getByText('Round 1')).toBeInTheDocument();
     expect(within(sheet).getByText(getFaithfulMission(firstMission)!.title)).toBeInTheDocument();
   });

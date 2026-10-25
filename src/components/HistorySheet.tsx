@@ -18,7 +18,7 @@ export default function HistorySheet({ rounds, scores, onClose }: Props) {
   return (
     <div className="backdrop" onClick={onClose}>
       <div className="dialog" role="dialog" aria-modal="true" aria-labelledby="history-title" onClick={(e) => e.stopPropagation()}>
-        <h2 id="history-title">History</h2>
+        <h2 id="history-title">Scores</h2>
         <p className="score" aria-label="Session score">
           Faithful <strong>{scores.faithful}</strong> – <strong>{scores.traitors}</strong> Traitors
         </p>

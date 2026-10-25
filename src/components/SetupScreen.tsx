@@ -36,16 +36,9 @@ export default function SetupScreen(props: Props) {
 
   return (
     <main className="screen setup">
-      <header className="setup-header">
-        <h1 className="brand">
-          Padel <span>Traitors</span>
-        </h1>
-        {session.rounds.length > 0 && (
-          <button className="btn-text" onClick={() => setShowHistory(true)}>
-            History
-          </button>
-        )}
-      </header>
+      <h1 className="brand">
+        Padel <span>Traitors</span>
+      </h1>
 
       <form className="add-form" onSubmit={submit}>
         <label className="sr-only" htmlFor="new-player">
@@ -121,6 +114,14 @@ export default function SetupScreen(props: Props) {
         <button className="btn-text" onClick={() => setShowHelp(true)}>
           How it works
         </button>
+        {session.rounds.length > 0 && (
+          <>
+            {' · '}
+            <button className="btn-text" onClick={() => setShowHistory(true)}>
+              Scores
+            </button>
+          </>
+        )}
         {' · '}
         <button className="btn-text" onClick={onReset}>
           Reset

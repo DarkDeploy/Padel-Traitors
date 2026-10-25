@@ -278,11 +278,10 @@ input::placeholder {
 /* ───────── Setup ───────── */
 
 .brand {
-  font-size: clamp(1.6rem, 7.5vw, 2.1rem);
+  font-size: 2.2rem;
   padding: 16px 0 4px;
   text-transform: uppercase;
   letter-spacing: 0.01em;
-  white-space: nowrap;
 }
 
 .brand span {
@@ -396,18 +395,6 @@ input::placeholder {
   color: var(--muted);
   font-size: 0.9rem;
   text-align: center;
-}
-
-.setup-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.setup-header .btn-text {
-  padding: 20px 0 0;
-  flex: none;
 }
 
 /* ───────── Handover ───────── */
@@ -725,35 +712,6 @@ input::placeholder {
   animation: none;
 }
 
-.segmented {
-  display: flex;
-  padding: 4px;
-  gap: 4px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-}
-
-.segmented button {
-  flex: 1;
-  min-height: calc(var(--control) - 8px);
-  border: 0;
-  border-radius: var(--r-pill);
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
-}
-
-.segmented button.on {
-  background: var(--text);
-  color: var(--bg);
-}
-
 .history {
   list-style: none;
   margin: 0;
@@ -844,6 +802,10 @@ input::placeholder {
 
 .dialog-actions .btn {
   flex: 1;
+}
+
+.dialog .btn-text.center {
+  align-self: center;
 }
 
 .how-list {

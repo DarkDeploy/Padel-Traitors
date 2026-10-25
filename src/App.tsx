@@ -10,6 +10,7 @@ import PlayingScreen from './components/PlayingScreen';
 import RoleCard from './components/RoleCard';
 import RoundRevealScreen from './components/RoundRevealScreen';
 import SetupScreen from './components/SetupScreen';
+import WhoWonSheet from './components/WhoWonSheet';
 
 type Dialog = 'next' | 'reset' | 'abandon' | 'reveal' | null;
 
@@ -137,8 +138,6 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         sideDareId={current.sideDareId}
         traitors={game.traitorNames(session)}
         traitorCounts={game.traitorNames(session).map((n) => game.timesTraitor(session, n))}
-        winner={session.rounds.find((r) => r.round === current.round)?.winner ?? null}
-        onWinner={(w) => update((s) => game.setWinner(s, w))}
         onNextGame={() => setDialog('next')}
         onEditPlayers={() => update(game.returnToSetup)}
       />
@@ -179,18 +178,15 @@ export default function App({ passDelayMs = 600 }: AppProps) {
           First, agree out loud on one suspect.
         </ConfirmDialog>
       )}
-      {dialog === 'next' && (
-        <ConfirmDialog
-          title="Start next game?"
-          confirmLabel="Deal"
-          onConfirm={() => {
+      {dialog === 'next' && current && (
+        <WhoWonSheet
+          round={current.round}
+          onPick={(winner) => {
             setDialog(null);
-            apply((s) => game.startRound(s));
+            apply((s) => game.startRound(game.setWinner(s, winner)));
           }}
           onCancel={() => setDialog(null)}
-        >
-          New roles and new missions.
-        </ConfirmDialog>
+        />
       )}
       {dialog === 'abandon' && (
         <ConfirmDialog

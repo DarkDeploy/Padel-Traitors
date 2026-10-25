@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { getDare, getFaithfulMission } from '../missions';
-import type { Winner } from '../types';
 import WinRules from './WinRules';
 
 interface Props {
@@ -11,8 +10,6 @@ interface Props {
   traitors: string[];
   /** Times each Traitor (same order) has now been a Traitor this session. */
   traitorCounts: number[];
-  winner: Winner | null;
-  onWinner: (winner: Winner | null) => void;
   onNextGame: () => void;
   onEditPlayers: () => void;
 }
@@ -87,18 +84,6 @@ export default function RoundRevealScreen(props: Props) {
 
           <section className="result">
             <WinRules />
-            <div className="segmented" role="group" aria-label="Who won">
-              {(['faithful', 'traitors'] as const).map((w) => (
-                <button
-                  key={w}
-                  className={props.winner === w ? 'on' : ''}
-                  aria-pressed={props.winner === w}
-                  onClick={() => props.onWinner(props.winner === w ? null : w)}
-                >
-                  {w === 'faithful' ? 'Faithful won' : 'Traitors won'}
-                </button>
-              ))}
-            </div>
           </section>
 
           <div className="stack">
