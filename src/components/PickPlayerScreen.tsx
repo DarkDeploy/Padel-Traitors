@@ -10,7 +10,7 @@ export default function PickPlayerScreen({ players, onPick, onCancel }: Props) {
   return (
     <main className="screen">
       <button className="corner-btn" aria-label="Cancel" onClick={onCancel}>
-        ←
+        ×
       </button>
       <h1 className="pick-title">Who's checking?</h1>
       <ul className="pick-list">

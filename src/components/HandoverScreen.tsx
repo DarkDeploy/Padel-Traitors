@@ -22,7 +22,7 @@ export default function HandoverScreen(props: Props) {
   return (
     <main className="screen screen-center handover">
       <button className="corner-btn" aria-label={props.cornerLabel} onClick={props.onCorner}>
-        ←
+        ×
       </button>
 
       <div className="handover-top">
@@ -40,7 +40,7 @@ export default function HandoverScreen(props: Props) {
             {doneLabel}
           </button>
         ) : (
-          <p className="muted small">Eyes away, everyone else.</p>
+          <p className="muted small">Only {name} looks at this.</p>
         )}
         {progress && <p className="progress center">{progress}</p>}
       </div>
