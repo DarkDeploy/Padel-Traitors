@@ -1,13 +1,13 @@
 import { recordRound, selectTraitors, validateConfig } from './allocation';
 import { COURT_DARES, FAITHFUL_MISSIONS, pickMission, SIDE_DARES } from './missions';
 import { createId, cryptoRandomInt, type RandomInt } from './random';
-import type { Player, Role, Session } from './types';
+import type { Player, Role, Session, Winner } from './types';
 
 export const MAX_NAME_LENGTH = 24;
 
 export function createSession(): Session {
   return {
-    version: 5,
+    version: 6,
     phase: 'setup',
     players: [],
     traitorCount: 1,
@@ -17,6 +17,7 @@ export function createSession(): Session {
     previousFaithfulMissionId: null,
     previousCourtDareId: null,
     previousSideDareId: null,
+    rounds: [],
     current: null,
   };
 }
@@ -155,7 +156,40 @@ export function passPhone(session: Session): Session {
     previousFaithfulMissionId: current.faithfulMissionId,
     previousCourtDareId: current.courtDareId,
     previousSideDareId: current.sideDareId ?? session.previousSideDareId,
+    rounds: [
+      ...session.rounds,
+      {
+        round: current.round,
+        faithfulMissionId: current.faithfulMissionId,
+        courtDareId: current.courtDareId,
+        sideDareId: current.sideDareId,
+        traitors: current.traitorIds.map((id) => session.players.find((p) => p.id === id)!.name),
+        winner: null,
+      },
+    ],
   };
+}
+
+/** Records who won the round just revealed (host's call). Tapping again clears it. */
+export function setWinner(session: Session, winner: Winner | null): Session {
+  if (session.phase !== 'revealed' || !session.current) return session;
+  const round = session.current.round;
+  return { ...session, rounds: session.rounds.map((r) => (r.round === round ? { ...r, winner } : r)) };
+}
+
+export function scores(session: Session): { faithful: number; traitors: number } {
+  let faithful = 0;
+  let traitors = 0;
+  for (const r of session.rounds) {
+    if (r.winner === 'faithful') faithful++;
+    if (r.winner === 'traitors') traitors++;
+  }
+  return { faithful, traitors };
+}
+
+/** How many rounds this player has been a Traitor, including the current one. */
+export function timesTraitor(session: Session, name: string): number {
+  return session.history[normaliseName(name)]?.timesTraitor ?? 0;
 }
 
 /** Ends the round: the missions and the Traitors are shown to everyone. */

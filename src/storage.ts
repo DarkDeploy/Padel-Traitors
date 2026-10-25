@@ -1,5 +1,5 @@
 import { getDare, getFaithfulMission } from './missions';
-import type { CurrentRound, PlayerHistory, Session } from './types';
+import type { CurrentRound, PlayerHistory, RoundRecord, Session } from './types';
 
 export const STORAGE_KEY = 'padel-traitors:session';
 
@@ -24,6 +24,15 @@ function isHistory(v: unknown): v is PlayerHistory {
   );
 }
 
+function isRoundRecord(v: unknown): v is RoundRecord {
+  if (!isObject(v) || !isCount(v.round) || v.round < 1) return false;
+  if (!isString(v.faithfulMissionId) || !getFaithfulMission(v.faithfulMissionId)) return false;
+  if (!isString(v.courtDareId) || !getDare(v.courtDareId)) return false;
+  if (v.sideDareId !== null && (!isString(v.sideDareId) || !getDare(v.sideDareId))) return false;
+  if (!isStringArray(v.traitors) || v.traitors.length < 1) return false;
+  return v.winner === null || v.winner === 'faithful' || v.winner === 'traitors';
+}
+
 function isCurrentRound(v: unknown, playerIds: Set<string>): v is CurrentRound {
   if (!isObject(v)) return false;
   if (!isCount(v.round) || v.round < 1) return false;
@@ -41,7 +50,7 @@ function isCurrentRound(v: unknown, playerIds: Set<string>): v is CurrentRound {
 
 /** Validates unknown data as a Session. Returns null for anything malformed or from an older version. */
 export function parseSession(data: unknown): Session | null {
-  if (!isObject(data) || data.version !== 5) return null;
+  if (!isObject(data) || data.version !== 6) return null;
   const { players, history } = data;
   if (!Array.isArray(players)) return null;
   for (const p of players) {
@@ -57,6 +66,8 @@ export function parseSession(data: unknown): Session | null {
   for (const id of [data.previousFaithfulMissionId, data.previousCourtDareId, data.previousSideDareId]) {
     if (id !== null && !isString(id)) return null;
   }
+  if (!Array.isArray(data.rounds) || !data.rounds.every(isRoundRecord)) return null;
+  if (data.rounds.length !== data.completedRounds) return null;
 
   const { phase, current } = data;
   if (phase === 'setup') {

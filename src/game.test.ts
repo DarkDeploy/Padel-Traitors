@@ -105,6 +105,21 @@ describe('rounds', () => {
     }
   });
 
+  it('records the winner and keeps a session score', () => {
+    let s = dealAll(game.startRound(withPlayers(['A', 'B', 'C']), seededRandomInt(13)).session!);
+    expect(s.rounds).toHaveLength(1);
+    expect(s.rounds[0].winner).toBeNull();
+    expect(game.setWinner(s, 'faithful')).toBe(s); // not revealed yet
+    s = game.revealRound(s);
+    s = game.setWinner(s, 'faithful');
+    expect(game.scores(s)).toEqual({ faithful: 1, traitors: 0 });
+    s = dealAll(game.startRound(s, seededRandomInt(14)).session!);
+    s = game.setWinner(game.revealRound(s), 'traitors');
+    expect(game.scores(s)).toEqual({ faithful: 1, traitors: 1 });
+    expect(s.rounds.map((r) => r.round)).toEqual([1, 2]);
+    expect(game.timesTraitor(s, s.rounds[1].traitors[0])).toBeGreaterThanOrEqual(1);
+  });
+
   it('reveals only after everyone has their role', () => {
     let s = game.startRound(withPlayers(['A', 'B', 'C']), seededRandomInt(9)).session!;
     expect(game.revealRound(s)).toBe(s);

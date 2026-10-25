@@ -11,10 +11,12 @@ interface Props {
   onTraitorCount: (n: number) => void;
   onStart: () => string | null;
   onReset: () => void;
+  scores: { faithful: number; traitors: number };
 }
 
 export default function SetupScreen(props: Props) {
-  const { session, onAdd, onTraitorCount, onStart, onReset } = props;
+  const { session, onAdd, onTraitorCount, onStart, onReset, scores } = props;
+  const played = scores.faithful + scores.traitors;
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState(false);
@@ -36,6 +38,11 @@ export default function SetupScreen(props: Props) {
       <h1 className="brand">
         Padel <span>Traitors</span>
       </h1>
+      {played > 0 && (
+        <p className="scoreboard" aria-label="Session score">
+          Faithful <strong>{scores.faithful}</strong> <span>–</span> <strong>{scores.traitors}</strong> Traitors
+        </p>
+      )}
 
       <form className="add-form" onSubmit={submit}>
         <label className="sr-only" htmlFor="new-player">

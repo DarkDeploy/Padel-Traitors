@@ -43,11 +43,24 @@ export interface CurrentRound {
   viewed: boolean;
 }
 
+export type Winner = 'faithful' | 'traitors';
+
+/** A finished round, kept for the session history shown at each reveal. */
+export interface RoundRecord {
+  round: number;
+  faithfulMissionId: string;
+  courtDareId: string;
+  sideDareId: string | null;
+  /** Display names of the Traitors. */
+  traitors: string[];
+  winner: Winner | null;
+}
+
 /** setup → dealing → playing → revealed → (next round) dealing … */
 export type Phase = 'setup' | 'dealing' | 'playing' | 'revealed';
 
 export interface Session {
-  version: 5;
+  version: 6;
   phase: Phase;
   players: Player[];
   traitorCount: number;
@@ -58,5 +71,7 @@ export interface Session {
   previousFaithfulMissionId: string | null;
   previousCourtDareId: string | null;
   previousSideDareId: string | null;
+  /** Finished rounds, oldest first. */
+  rounds: RoundRecord[];
   current: CurrentRound | null;
 }

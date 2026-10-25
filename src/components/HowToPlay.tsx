@@ -21,7 +21,7 @@ export default function HowToPlay({ onClose }: { onClose: () => void }) {
           </li>
           <li>
             <strong>Traitors</strong> know each other and share a risky dare (two if someone sits out — either
-            counts). Spot the habit, copy it, blend in.
+            counts). They work out the Faithful habit and copy it to blend in.
           </li>
           <li>
             <strong>Play your game</strong>, agree on one suspect, then reveal.

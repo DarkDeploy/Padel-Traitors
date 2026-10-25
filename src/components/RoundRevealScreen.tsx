@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getDare, getFaithfulMission } from '../missions';
+import type { RoundRecord, Winner } from '../types';
 import WinRules from './WinRules';
 
 interface Props {
@@ -8,9 +9,17 @@ interface Props {
   courtDareId: string;
   sideDareId: string | null;
   traitors: string[];
+  /** Times each Traitor (same order) has now been a Traitor this session. */
+  traitorCounts: number[];
+  winner: Winner | null;
+  onWinner: (winner: Winner | null) => void;
+  scores: { faithful: number; traitors: number };
+  previousRounds: RoundRecord[];
   onNextGame: () => void;
   onEditPlayers: () => void;
 }
+
+const ordinal = (n: number) => `${n}${['th', 'st', 'nd', 'rd'][n % 100 > 10 && n % 100 < 14 ? 0 : n % 10 < 4 ? n % 10 : 0]}`;
 
 /** Revealed in stages so the host can build a little suspense. */
 export default function RoundRevealScreen(props: Props) {
@@ -35,6 +44,11 @@ export default function RoundRevealScreen(props: Props) {
     );
   }
 
+  const honours = props.traitors
+    .map((name, i) => (props.traitorCounts[i] > 1 ? `${name}'s ${ordinal(props.traitorCounts[i])} time` : null))
+    .filter(Boolean)
+    .join(' · ');
+
   return (
     <main className="screen reveal-round">
       <p className="label center">Round {props.round} reveal</p>
@@ -42,6 +56,7 @@ export default function RoundRevealScreen(props: Props) {
       <section className="reveal-block reveal-traitors">
         <p className="label">The Traitor{plural ? 's were' : ' was'}</p>
         <h2>{props.traitors.join(' & ')}</h2>
+        {honours && <p className="muted small">{honours}</p>}
         <p className="mission-text">
           <strong>{courtDare?.title}</strong>: {courtDare?.text}
         </p>
@@ -73,6 +88,40 @@ export default function RoundRevealScreen(props: Props) {
           </section>
 
           <WinRules />
+
+          <section className="winner" aria-label="Who won">
+            <div className="segmented" role="group">
+              {(['faithful', 'traitors'] as const).map((w) => (
+                <button
+                  key={w}
+                  className={props.winner === w ? 'on' : ''}
+                  aria-pressed={props.winner === w}
+                  onClick={() => props.onWinner(props.winner === w ? null : w)}
+                >
+                  {w === 'faithful' ? 'Faithful won' : 'Traitors won'}
+                </button>
+              ))}
+            </div>
+            <p className="muted small center">
+              Session: Faithful {props.scores.faithful} – {props.scores.traitors} Traitors
+            </p>
+          </section>
+
+          {props.previousRounds.length > 0 && (
+            <section className="history">
+              <p className="label">Earlier rounds</p>
+              <ul>
+                {[...props.previousRounds].reverse().slice(0, 5).map((r) => (
+                  <li key={r.round}>
+                    <span className="muted">{r.round}</span>
+                    <span>{getFaithfulMission(r.faithfulMissionId)?.title}</span>
+                    <span className="history-traitors">{r.traitors.join(' & ')}</span>
+                    <span className={`dot ${r.winner ?? ''}`} aria-label={r.winner ?? 'undecided'} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           <div className="stack">
             <button className="btn btn-primary btn-block" onClick={props.onNextGame}>

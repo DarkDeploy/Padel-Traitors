@@ -20,7 +20,7 @@ The Faithful mission isn't scored: it's camouflage. Traitors spot it and copy it
 1. **Setup** — add players (tap a name to edit it, × to remove), choose the number of Traitors, tap **Start Game**.
 2. **Pass the phone** — the named player presses and holds **Hold to view**; the card shows only while held. They tap **Done — pass to …**.
 3. **Play** — a 15–20 minute game. **Check my role** lets anyone re-read their card.
-4. **End round & reveal** — the Traitors, then the Faithful mission, revealed one tap at a time. Then **Next Game** for new roles and missions with the same players, or **Edit players** first.
+4. **End round & reveal** — the Traitors, then the Faithful mission, revealed one tap at a time. The host taps who won; the session score and earlier rounds show at each reveal and on setup. Then **Next Game** for new roles and missions with the same players, or **Edit players** first.
 
 On an iPhone, use Share → **Add to Home Screen** to open it full-screen like an app.
 
@@ -55,7 +55,7 @@ npm run preview    # serve the production build locally
 | --- | --- |
 | `src/missions.ts` | The secret missions. Add one to `FAITHFUL_MISSIONS`, `COURT_DARES` or `SIDE_DARES` with a unique `id`, title and text. |
 | `src/allocation.ts` | Fair Traitor selection (pure, tested). |
-| `src/game.ts` | Session state transitions: players, dealing, passing the phone, reveal, next round. |
+| `src/game.ts` | Session state transitions: players, dealing, passing the phone, reveal, winner, next round. |
 | `src/storage.ts` | Saving, loading and validating the session in `localStorage`. |
 | `src/random.ts` | Unbiased random numbers from `crypto.getRandomValues`. |
 | `src/components/` | Screens and the confirmation dialog. |

@@ -159,7 +159,7 @@ describe('dealing', () => {
     const [a, b] = seen.filter((s) => s.traitor);
     expect(a.text).toContain(`Fellow Traitor: ${b.name}`);
     expect(b.text).toContain(`Fellow Traitor: ${a.name}`);
-    expect(a.text).toContain('one is enough');
+    expect(a.text).toContain('Between you, pull off');
   });
 
   it('ignores holds until the pass delay has passed', async () => {
@@ -209,6 +209,13 @@ describe('playing and reveal', () => {
     expect(screen.getByRole('heading', { name: seen.find((s) => s.traitor)!.name })).toBeInTheDocument();
     expect(screen.getByText('Who won?')).toBeInTheDocument();
     expect(stored().phase).toBe('revealed');
+
+    // Host records the result; the session score follows.
+    await user.click(screen.getByRole('button', { name: 'Traitors won' }));
+    expect(screen.getByText('Session: Faithful 0 – 1 Traitors')).toBeInTheDocument();
+    expect(stored().rounds[0].winner).toBe('traitors');
+    await user.click(screen.getByRole('button', { name: 'Traitors won' }));
+    expect(stored().rounds[0].winner).toBeNull();
   });
 
   it('starts the next round after confirmation, keeping players', async () => {
@@ -228,6 +235,14 @@ describe('playing and reveal', () => {
     const second = await dealEveryone(user);
     expect(second.find((s) => s.traitor)!.name).not.toBe(first.find((s) => s.traitor)!.name);
     expect(stored().completedRounds).toBe(2);
+
+    // Earlier rounds show at the next reveal.
+    await user.click(screen.getByRole('button', { name: 'End round & reveal' }));
+    await user.click(screen.getByRole('button', { name: 'Reveal' }));
+    await user.click(screen.getByRole('button', { name: 'Reveal the Traitor' }));
+    await user.click(screen.getByRole('button', { name: 'Reveal the Faithful mission' }));
+    expect(screen.getByText('Earlier rounds')).toBeInTheDocument();
+    expect(screen.getByText(getFaithfulMission(firstMission)!.title)).toBeInTheDocument();
   });
 
   it('resets the session after confirmation', async () => {
@@ -270,7 +285,7 @@ describe('persistence', () => {
 
   it('restores a valid saved setup', () => {
     const session: Session = {
-      version: 5,
+      version: 6,
       phase: 'setup',
       players: [
         { id: 'a', name: 'Ana' },
@@ -283,6 +298,11 @@ describe('persistence', () => {
       previousFaithfulMissionId: 'lob-lover',
       previousCourtDareId: 'replay',
       previousSideDareId: null,
+      rounds: [
+        { round: 1, faithfulMissionId: 'lob-lover', courtDareId: 'replay', sideDareId: null, traitors: ['Ana'], winner: 'faithful' },
+        { round: 2, faithfulMissionId: 'cheers', courtDareId: 'foot-fault', sideDareId: null, traitors: ['Ben'], winner: 'traitors' },
+        { round: 3, faithfulMissionId: 'my-bad', courtDareId: 'lost-ball', sideDareId: null, traitors: ['Ana'], winner: null },
+      ],
       current: null,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
@@ -290,10 +310,11 @@ describe('persistence', () => {
     expect(screen.getByText('Ana')).toBeInTheDocument();
     expect(screen.getByText('Ben')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Start Next Game' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Session score')).toHaveTextContent('Faithful 1 – 1 Traitors');
   });
 
   it('shows an error screen for malformed saved data and can start fresh', async () => {
-    localStorage.setItem(STORAGE_KEY, '{"version":5,"players":"oops"}');
+    localStorage.setItem(STORAGE_KEY, '{"version":6,"players":"oops"}');
     const { user } = setup();
     expect(screen.getByText("Saved game couldn't be loaded")).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Start fresh' }));

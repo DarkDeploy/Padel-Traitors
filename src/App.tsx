@@ -93,7 +93,10 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         delayMs={passDelayMs}
         card={cardFor(player.id)}
         onViewed={() => update(game.markViewed)}
-        onDone={() => update(game.passPhone)}
+        onDone={() => {
+          if (!nextId) navigator.vibrate?.([20, 40, 20]); // everyone's in
+          update(game.passPhone);
+        }}
         cornerLabel="Back to setup"
         onCorner={() => setDialog('abandon')}
       />
@@ -133,6 +136,11 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         courtDareId={current.courtDareId}
         sideDareId={current.sideDareId}
         traitors={game.traitorNames(session)}
+        traitorCounts={game.traitorNames(session).map((n) => game.timesTraitor(session, n))}
+        winner={session.rounds.find((r) => r.round === current.round)?.winner ?? null}
+        onWinner={(w) => update((s) => game.setWinner(s, w))}
+        scores={game.scores(session)}
+        previousRounds={session.rounds.filter((r) => r.round !== current.round)}
         onNextGame={() => setDialog('next')}
         onEditPlayers={() => update(game.returnToSetup)}
       />
@@ -147,6 +155,7 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         onTraitorCount={(n) => update((s) => game.setTraitorCount(s, n))}
         onStart={() => apply((s) => game.startRound(s))}
         onReset={() => setDialog('reset')}
+        scores={game.scores(session)}
       />
     );
   }

@@ -47,8 +47,10 @@ export default function RoleCard({ role, faithfulMissionId, courtDareId, sideDar
           )}
           <section className="card-section">
             <p>
-              {sideDare ? 'Pull off either one' : 'Pull it off'} without getting caught.
-              {shared ? ' Shared between you — one is enough.' : ''} Spot the Faithful habit and copy it.
+              {shared
+                ? `Between you, pull off ${sideDare ? 'one of these' : 'this'} without being caught.`
+                : `Pull ${sideDare ? 'one of these' : 'this'} off without being caught.`}{' '}
+              The Faithful all share a habit — work out what it is and do it too, so you blend in.
             </p>
           </section>
         </>
@@ -60,7 +62,7 @@ export default function RoleCard({ role, faithfulMissionId, courtDareId, sideDar
             <p className="mission-text">{mission?.text}</p>
           </section>
           <section className="card-section">
-            <p>Lean into this while you're on court. Don't overdo it — the Traitors are watching.</p>
+            <p>Do this whenever you're on court, as naturally as you can. The Traitors are watching for anything that looks forced.</p>
           </section>
         </>
       )}
