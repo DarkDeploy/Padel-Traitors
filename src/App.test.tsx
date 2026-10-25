@@ -212,7 +212,7 @@ describe('playing and reveal', () => {
 
     // Host records the result; the session score follows.
     await user.click(screen.getByRole('button', { name: 'Traitors won' }));
-    expect(screen.getByText('Faithful 0 – 1 Traitors')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Traitors won' })).toHaveAttribute('aria-pressed', 'true');
     expect(stored().rounds[0].winner).toBe('traitors');
     await user.click(screen.getByRole('button', { name: 'Traitors won' }));
     expect(stored().rounds[0].winner).toBeNull();
@@ -244,6 +244,7 @@ describe('playing and reveal', () => {
     await user.click(screen.getByRole('button', { name: 'Edit players' }));
     await user.click(screen.getByRole('button', { name: 'History' }));
     const sheet = screen.getByRole('dialog', { name: 'History' });
+    expect(within(sheet).getByLabelText('Session score')).toHaveTextContent('Faithful 0 – 0 Traitors');
     expect(within(sheet).getByText('Round 1')).toBeInTheDocument();
     expect(within(sheet).getByText(getFaithfulMission(firstMission)!.title)).toBeInTheDocument();
   });
@@ -313,7 +314,7 @@ describe('persistence', () => {
     expect(screen.getByText('Ana')).toBeInTheDocument();
     expect(screen.getByText('Ben')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Start Next Game' })).toBeInTheDocument();
-    expect(screen.getByLabelText('Session score')).toHaveTextContent('Faithful 1 – 1 Traitors');
+    expect(screen.queryByLabelText('Session score')).not.toBeInTheDocument();
   });
 
   it('shows an error screen for malformed saved data and can start fresh', async () => {

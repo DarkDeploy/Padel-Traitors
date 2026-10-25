@@ -17,7 +17,6 @@ interface Props {
 
 export default function SetupScreen(props: Props) {
   const { session, onAdd, onTraitorCount, onStart, onReset, scores } = props;
-  const played = scores.faithful + scores.traitors;
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState(false);
@@ -37,14 +36,16 @@ export default function SetupScreen(props: Props) {
 
   return (
     <main className="screen setup">
-      <h1 className="brand">
-        Padel <span>Traitors</span>
-      </h1>
-      {played > 0 && (
-        <p className="scoreboard" aria-label="Session score">
-          Faithful <strong>{scores.faithful}</strong> <span>–</span> <strong>{scores.traitors}</strong> Traitors
-        </p>
-      )}
+      <header className="setup-header">
+        <h1 className="brand">
+          Padel <span>Traitors</span>
+        </h1>
+        {session.rounds.length > 0 && (
+          <button className="btn-text" onClick={() => setShowHistory(true)}>
+            History
+          </button>
+        )}
+      </header>
 
       <form className="add-form" onSubmit={submit}>
         <label className="sr-only" htmlFor="new-player">
@@ -120,21 +121,13 @@ export default function SetupScreen(props: Props) {
         <button className="btn-text" onClick={() => setShowHelp(true)}>
           How it works
         </button>
-        {session.rounds.length > 0 && (
-          <>
-            {' · '}
-            <button className="btn-text" onClick={() => setShowHistory(true)}>
-              History
-            </button>
-          </>
-        )}
         {' · '}
         <button className="btn-text" onClick={onReset}>
           Reset
         </button>
       </footer>
       {showHelp && <HowToPlay onClose={() => setShowHelp(false)} />}
-      {showHistory && <HistorySheet rounds={session.rounds} onClose={() => setShowHistory(false)} />}
+      {showHistory && <HistorySheet rounds={session.rounds} scores={scores} onClose={() => setShowHistory(false)} />}
     </main>
   );
 }

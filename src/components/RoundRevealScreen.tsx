@@ -13,7 +13,6 @@ interface Props {
   traitorCounts: number[];
   winner: Winner | null;
   onWinner: (winner: Winner | null) => void;
-  scores: { faithful: number; traitors: number };
   onNextGame: () => void;
   onEditPlayers: () => void;
 }
@@ -86,23 +85,21 @@ export default function RoundRevealScreen(props: Props) {
             <p className="mission-text">{faithful?.text}</p>
           </section>
 
-          <WinRules />
-
-          <div className="segmented" role="group" aria-label="Who won">
-            {(['faithful', 'traitors'] as const).map((w) => (
-              <button
-                key={w}
-                className={props.winner === w ? 'on' : ''}
-                aria-pressed={props.winner === w}
-                onClick={() => props.onWinner(props.winner === w ? null : w)}
-              >
-                {w === 'faithful' ? 'Faithful won' : 'Traitors won'}
-              </button>
-            ))}
-          </div>
-          <p className="muted small center score-line">
-            Faithful {props.scores.faithful} – {props.scores.traitors} Traitors
-          </p>
+          <section className="result">
+            <WinRules />
+            <div className="segmented" role="group" aria-label="Who won">
+              {(['faithful', 'traitors'] as const).map((w) => (
+                <button
+                  key={w}
+                  className={props.winner === w ? 'on' : ''}
+                  aria-pressed={props.winner === w}
+                  onClick={() => props.onWinner(props.winner === w ? null : w)}
+                >
+                  {w === 'faithful' ? 'Faithful won' : 'Traitors won'}
+                </button>
+              ))}
+            </div>
+          </section>
 
           <div className="stack">
             <button className="btn btn-primary btn-block" onClick={props.onNextGame}>

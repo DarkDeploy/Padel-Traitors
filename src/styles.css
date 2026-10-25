@@ -278,10 +278,11 @@ input::placeholder {
 /* ───────── Setup ───────── */
 
 .brand {
-  font-size: 2.2rem;
+  font-size: clamp(1.6rem, 7.5vw, 2.1rem);
   padding: 16px 0 4px;
   text-transform: uppercase;
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .brand span {
@@ -397,18 +398,16 @@ input::placeholder {
   text-align: center;
 }
 
-.scoreboard {
+.setup-header {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--muted);
-  font-size: 0.95rem;
-  margin-top: -8px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.scoreboard strong {
-  color: var(--text);
-  font-size: 1.1rem;
+.setup-header .btn-text {
+  padding: 20px 0 0;
+  flex: none;
 }
 
 /* ───────── Handover ───────── */
@@ -709,11 +708,28 @@ input::placeholder {
   color: var(--text);
 }
 
+.result {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: rise 0.4s var(--ease) both;
+  animation-delay: 0.1s;
+}
+
+.result .rules {
+  padding: 0;
+  animation: none;
+}
+
 .segmented {
   display: flex;
   padding: 4px;
   gap: 4px;
-  background: var(--surface);
+  background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--r-pill);
 }
@@ -736,10 +752,6 @@ input::placeholder {
 .segmented button.on {
   background: var(--text);
   color: var(--bg);
-}
-
-.score-line {
-  margin-top: -6px;
 }
 
 .history {
@@ -809,6 +821,15 @@ input::placeholder {
 
 .dialog > p {
   color: var(--muted);
+}
+
+.dialog .score {
+  margin-top: -6px;
+}
+
+.dialog .score strong {
+  color: var(--text);
+  font-size: 1.15rem;
 }
 
 .dialog .rules {

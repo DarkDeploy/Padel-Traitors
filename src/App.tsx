@@ -139,7 +139,6 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         traitorCounts={game.traitorNames(session).map((n) => game.timesTraitor(session, n))}
         winner={session.rounds.find((r) => r.round === current.round)?.winner ?? null}
         onWinner={(w) => update((s) => game.setWinner(s, w))}
-        scores={game.scores(session)}
         onNextGame={() => setDialog('next')}
         onEditPlayers={() => update(game.returnToSetup)}
       />
