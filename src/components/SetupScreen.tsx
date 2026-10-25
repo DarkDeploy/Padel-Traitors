@@ -57,7 +57,7 @@ export default function SetupScreen(props: Props) {
             setError(null);
           }}
         />
-        <button className="btn btn-primary" type="submit">
+        <button className="btn btn-primary" type="submit" disabled={!name.trim()}>
           Add
         </button>
       </form>
@@ -144,6 +144,12 @@ function PlayerRow({
 
   function save(e?: FormEvent) {
     e?.preventDefault();
+    // An emptied name just cancels the edit.
+    if (!draft.trim()) {
+      onError(null);
+      setEditing(false);
+      return;
+    }
     const err = onRename(player.id, draft);
     onError(err);
     if (!err) setEditing(false);
