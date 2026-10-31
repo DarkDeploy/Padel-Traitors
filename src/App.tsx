@@ -9,6 +9,7 @@ import PickPlayerScreen from './components/PickPlayerScreen';
 import PlayingScreen from './components/PlayingScreen';
 import RoleCard from './components/RoleCard';
 import RoundRevealScreen from './components/RoundRevealScreen';
+import { rotation } from './rotation';
 import SetupScreen from './components/SetupScreen';
 import WhoWonSheet from './components/WhoWonSheet';
 
@@ -127,7 +128,14 @@ export default function App({ passDelayMs = 600 }: AppProps) {
         />
       );
     } else {
-      screen = <PlayingScreen round={current.round} onCheckRole={() => setRecheck({ step: 'pick' })} onEndRound={() => setDialog('reveal')} />;
+      screen = (
+        <PlayingScreen
+          round={current.round}
+          games={rotation(current.order.map(nameOf), current.round)}
+          onCheckRole={() => setRecheck({ step: 'pick' })}
+          onEndRound={() => setDialog('reveal')}
+        />
+      );
     }
   } else if (session.phase === 'revealed' && current) {
     screen = (

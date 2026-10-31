@@ -19,7 +19,7 @@ The Faithful mission isn't scored: it's camouflage. Traitors spot it and copy it
 
 1. **Setup** — add players (tap a name to edit it, × to remove), choose the number of Traitors, tap **Start Game**.
 2. **Pass the phone** — the named player presses and holds **Hold to view**; the card shows only while held. They tap **Done — pass to …**.
-3. **Play** — a 15–20 minute game. **Check my role** lets anyone re-read their card.
+3. **Play** — four short games. With five or more players the app suggests a rotation (one player swaps each game, carrying on from the previous round). **Check my role** lets anyone re-read their card.
 4. **End round & reveal** — the Traitors, then the Faithful mission, revealed one tap at a time. **Next Game** asks who won and deals the next round in one tap (or skip). **Scores** in the setup footer shows the session tally and every round.
 
 On an iPhone, use Share → **Add to Home Screen** to open it full-screen like an app.
