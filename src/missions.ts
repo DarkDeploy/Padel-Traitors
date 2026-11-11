@@ -52,11 +52,9 @@ export const COURT_DARES: Mission[] = [
   { id: 'split-decision', title: 'Split Decision', text: 'Get your partner to disagree with your call.' },
   { id: 'racket-whisperer', title: 'Racket Whisperer', text: 'Have a proper conversation with your racket out loud.' },
   { id: 'victory-dance', title: 'Victory Dance', text: 'Do a celebration dance after a point.' },
-  { id: 'underarm-serve', title: 'Underarm Serve', text: 'Serve underarm twice.' },
   { id: 'wrong-box', title: 'Wrong Box', text: 'Receive serve from the wrong side and get the point played.' },
   { id: 'tweener', title: 'Tweener', text: 'Hit a shot through your legs in a live rally.' },
   { id: 'double-bounce', title: 'Double Bounce', text: 'Win a point on a ball that bounced twice, uncontested.' },
-  { id: 'side-swap', title: 'Side Swap', text: 'Get your partner to swap sides with you mid-game without asking why.' },
 ];
 
 /** Dares you can pull off from the sideline (or on court). Only dealt when someone is sitting out. */
@@ -71,8 +69,8 @@ export const SIDE_DARES: Mission[] = [
   { id: 'sing-along', title: 'Sing-Along', text: 'Sing a line of a song and get someone to join in.' },
   { id: 'look-up', title: 'Look Up', text: "Get the group to look at something that isn't there." },
   { id: 'accent', title: 'Accent', text: 'Speak in a fake accent for a whole game without explaining why.' },
-  { id: 'ball-thief', title: 'Ball Thief', text: 'Pocket a ball and get the players to use a different one.' },
-  { id: 'coach', title: 'Coach', text: 'Give a player a tactical tip they actually follow.' },
+  { id: 'ball-thief', title: 'Ball Thief', text: 'Pocket three balls during the game and keep them.' },
+  { id: 'coach', title: 'Coach', text: 'Give two players a tactical tip they actually follow.' },
   { id: 'fake-call', title: 'Fake Call', text: 'Take a loud fake phone call about the match.' },
   { id: 'stat-attack', title: 'Stat Attack', text: 'Announce made-up stats for a player and have nobody question them.' },
   { id: 'water-break', title: 'Water Break', text: 'Get the players to stop for a drink mid-game.' },
