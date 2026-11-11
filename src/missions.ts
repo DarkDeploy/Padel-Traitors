@@ -42,11 +42,11 @@ export const FAITHFUL_MISSIONS: Mission[] = [
 
 /** Dares that need you to be playing. */
 export const COURT_DARES: Mission[] = [
-  { id: 'foot-fault', title: 'Foot Fault', text: 'Get a serve called as a foot fault.' },
+  { id: 'foot-fault', title: 'Foot Fault', text: 'Get two serves called as foot faults.' },
   { id: 'wrong-server', title: 'Wrong Server', text: 'Get the wrong player to serve a game.' },
   { id: 'wrong-ends', title: 'Wrong Ends', text: 'Get the pairs to change ends at the wrong time.' },
   { id: 'lost-ball', title: 'Lost Ball', text: 'Make a ball go "missing" so play stops to look for it.' },
-  { id: 'replay', title: 'Replay', text: 'Get a point replayed.' },
+  { id: 'replay', title: 'Replay', text: 'Get two points replayed.' },
   { id: 'bad-call', title: 'Bad Call', text: 'Get a ball that was in called out, and the point stands.' },
   { id: 'made-up-rule', title: 'Made-Up Rule', text: 'Get a point played under a rule you invented.' },
   { id: 'split-decision', title: 'Split Decision', text: 'Get your partner to disagree with your call.' },
@@ -56,12 +56,12 @@ export const COURT_DARES: Mission[] = [
 
 /** Dares you can pull off from the sideline (or on court). Only dealt when someone is sitting out. */
 export const SIDE_DARES: Mission[] = [
-  { id: 'wrong-score', title: 'Wrong Score', text: 'Call out a wrong score from the side and have it stick.' },
+  { id: 'wrong-score', title: 'Wrong Score', text: 'Twice, call out a wrong score from the side and have it stick.' },
   { id: 'fake-stop', title: 'Fake Stop', text: 'Stop play for a reason you made up.' },
   { id: 'commentator', title: 'Commentator', text: "Commentate a whole point out loud like it's on TV." },
   { id: 'slow-clap', title: 'Slow Clap', text: 'Start a slow clap and get someone to join in.' },
   { id: 'wrong-vamos', title: 'Wrong Vamos', text: 'Shout "Vamos!" for the team that just lost the point.' },
-  { id: 'wrong-name', title: 'Wrong Name', text: 'Call a player by the wrong name without them noticing.' },
+  { id: 'wrong-name', title: 'Wrong Name', text: 'Twice, call a player by the wrong name without them noticing.' },
   { id: 'take-a-bow', title: 'Take a Bow', text: 'Get a player to take a bow after a point.' },
   { id: 'sing-along', title: 'Sing-Along', text: 'Sing a line of a song and get someone to join in.' },
   { id: 'look-up', title: 'Look Up', text: "Get the group to look at something that isn't there." },
